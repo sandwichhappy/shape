@@ -96,7 +96,7 @@
     <p class="bottom">이 웹사이트는 Teachable Machine으로 학습한 도형 분류 모델을 사용합니다. 사진은 외부 서버로 업로드하지 않습니다.</p>
   </main>
   <script>
-    // 1. Teachable Machine에서 다운로드한 모델 3개 파일을 같은 폴더에서 읽습니다.
+    // 1. Teachable Machine에서 다운로드한 모델 3개 파일을 같은 폴더에서 읽는다.
     const MODEL_URL = './model.json';
     const METADATA_URL = './metadata.json';
     const KOREAN = {right_triangle:'직각삼각형', rectangle:'직사각형', square:'정사각형'};
@@ -128,7 +128,7 @@
       questionText.textContent = 'AI가 예측한 뒤, 도형의 각과 변을 직접 살펴봐요.';
       bars.replaceChildren();
     }
-    // 2. 사진 또는 카메라 화면을 모델에 넣어 예측합니다.
+    // 2. 사진 또는 카메라 화면을 모델에 넣어 예측한다.
     async function predict(element) {
       if (!model) return;
       const result = await model.predict(element);
@@ -156,7 +156,7 @@
         track.append(fill); row.append(head,track); bars.append(row);
       }
     }
-    // 3. 선택한 사진은 외부에 전송하지 않고 브라우저에서만 사용합니다.
+    // 3. 선택한 사진은 외부에 전송하지 않고 브라우저에서만 사용한다.
     imageInput.addEventListener('change', async () => {
       const file = imageInput.files && imageInput.files[0];
       if (!file) return;
@@ -182,7 +182,7 @@
       video.pause(); video.srcObject=null;
       stopCamera.disabled=true; startCamera.disabled=false;
     }
-    // 4. 카메라를 켜면 브라우저가 권한을 요청합니다. 카메라 영상도 외부로 전송하지 않습니다.
+    // 4. 카메라를 켜면 브라우저가 권한을 요청한다. 카메라 영상도 외부로 전송하지 않는다!
     startCamera.addEventListener('click', async () => {
       if (!model) { setStatus('AI 모델을 먼저 불러와야 해요.',true); return; }
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
@@ -213,7 +213,7 @@
       if (preview.src) preview.style.display='block'; else placeholder.style.display='block';
       setStatus('카메라를 껐어요. 사진을 업로드해도 좋아요.');
     });
-    // 5. 파일이 같은 폴더에 있는지 확인하고 Teachable Machine 모델을 로드합니다.
+    // 5. 파일이 같은 폴더에 있는지 확인하고 Teachable Machine 모델을 로드한다!
     async function loadModel() {
       if (location.protocol === 'file:') {
         setStatus('HTML 파일을 직접 열면 모델이 차단될 수 있어요. GitHub Pages로 배포한 주소에서 실행해 주세요.',true);
