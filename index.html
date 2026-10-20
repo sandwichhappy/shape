@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI 도형 탐험대 | 초등학교 3학년</title>
+  <style>
+    :root { --navy:#172f57; --blue:#2563eb; --sky:#eff6ff; --ink:#253650; --muted:#64748b; --line:#dbe5f1; }
+    * { box-sizing:border-box; }
+    body { margin:0; font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif; color:var(--ink); background:linear-gradient(155deg,#eff7ff 0%,#f8fbff 55%,#fff8ef 100%); min-height:100vh; }
+    .wrap { max-width:1020px; margin:0 auto; padding:36px 20px 64px; }
+    header { text-align:center; margin-bottom:27px; }
+    .eyebrow { display:inline-block; color:#1d4ed8; background:#dbeafe; padding:8px 14px; border-radius:99px; font-size:13px; font-weight:800; letter-spacing:.04em; }
+    h1 { margin:14px 0 10px; font-size:clamp(29px,5vw,45px); color:var(--navy); letter-spacing:-.04em; }
+    header p { margin:0; font-size:16px; line-height:1.65; color:var(--muted); }
+    .layout { display:grid; grid-template-columns:1.04fr .96fr; gap:20px; }
+    .panel { background:#fff; border:1px solid #e5edf6; border-radius:24px; box-shadow:0 14px 45px rgba(40,70,120,.07); padding:25px; min-width:0; }
+    .section-label { color:#1d4ed8; font-weight:800; font-size:13px; margin:0 0 7px; }
+    h2 { margin:0 0 17px; font-size:22px; letter-spacing:-.025em; color:var(--navy); }
+    .actions { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; }
+    button, .upload { border:0; border-radius:13px; padding:13px 16px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; gap:7px; }
+    button:focus-visible,.upload:focus-within { outline:3px solid #93c5fd; outline-offset:3px; }
+    .primary { background:var(--blue); color:#fff; }
+    .secondary { background:#eaf1ff; color:#1e40af; }
+    .ghost { background:#f1f5f9; color:#475569; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    input[type=file] { display:none; }
+    .stage { background:#f8fbff; border:2px dashed #c9d8ec; border-radius:18px; min-height:300px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+    .stage img,.stage video { display:none; width:100%; max-height:410px; object-fit:contain; }
+    .placeholder { padding:38px 18px; text-align:center; color:#71839b; }
+    .placeholder .emoji { font-size:62px; display:block; margin-bottom:12px; }
+    .placeholder strong { display:block; color:#344c6a; font-size:18px; margin-bottom:7px; }
+    .hint { color:var(--muted); font-size:13px; line-height:1.65; margin:12px 0 0; }
+    .status { border-radius:12px; background:#f1f5f9; color:#475569; padding:11px 14px; font-size:13px; margin-bottom:17px; line-height:1.5; }
+    .status.error { background:#fff1f2; color:#be123c; }
+    .answer { background:var(--sky); border-radius:17px; padding:19px; margin-bottom:20px; }
+    .answer .tiny { color:#5472a0; font-size:13px; font-weight:800; }
+    .answer .name { color:var(--navy); font-size:clamp(23px,3vw,32px); font-weight:900; margin:6px 0; }
+    .answer .confidence { font-size:14px; color:#527098; }
+    .bar-item { margin-bottom:17px; }
+    .bar-head { display:flex; justify-content:space-between; font-size:14px; font-weight:750; margin-bottom:8px; }
+    .bar-track { background:#edf2f8; height:13px; border-radius:99px; overflow:hidden; }
+    .bar-fill { height:100%; width:0; background:#93c5fd; border-radius:99px; transition:width .25s; }
+    .bar-fill.top { background:#2563eb; }
+    .question { margin-top:23px; border-top:1px solid var(--line); padding-top:19px; }
+    .question h3 { font-size:18px; margin:0 0 9px; color:var(--navy); }
+    .question p { line-height:1.75; margin:0; font-size:15px; }
+    .notice { margin-top:21px; background:#fff9ed; border:1px solid #f9e3b8; padding:16px 19px; border-radius:15px; color:#75521a; line-height:1.7; font-size:14px; }
+    .bottom { text-align:center; margin-top:21px; color:#7a8ca3; font-size:12px; }
+    @media(max-width:760px) { .layout{grid-template-columns:1fr;} .wrap{padding:24px 14px 44px;} .panel{padding:19px;} .stage{min-height:250px;} .actions > * {flex:1;} }
+  </style>
+  <!-- 6주차 수업 조건: Teachable Machine에서 제공하는 라이브러리와 버전을 사용합니다. -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+</head>
+<body>
+  <main class="wrap">
+    <header>
+      <span class="eyebrow">초등학교 3학년 · 수학 × 인공지능</span>
+      <h1>🔷 AI 도형 탐험대</h1>
+      <p>내가 그린 도형을 AI는 알아볼 수 있을까?<br>사진을 보여주고, AI의 생각을 확인해 보세요!</p>
+    </header>
+    <div class="layout">
+      <section class="panel" aria-labelledby="upload-title">
+        <p class="section-label">STEP 01 · 도형 보여주기</p>
+        <h2 id="upload-title">도형 사진을 준비해요</h2>
+        <div class="actions">
+          <label class="upload primary" for="imageFile">📁 사진 올리기<input id="imageFile" type="file" accept="image/*" /></label>
+          <button class="secondary" id="startCamera" type="button">📷 카메라 켜기</button>
+          <button class="ghost" id="stopCamera" type="button" disabled>카메라 끄기</button>
+        </div>
+        <div class="stage">
+          <div class="placeholder" id="placeholder"><span class="emoji">✏️ 📐</span><strong>도형을 보여주세요!</strong>사진을 올리거나 카메라를 켜 보세요.</div>
+          <img id="preview" alt="내가 선택한 도형 사진" />
+          <video id="camera" autoplay muted playsinline aria-label="실시간 카메라 화면"></video>
+        </div>
+        <p class="hint">사진은 브라우저 안에서만 분석해요. 카메라는 HTTPS 웹사이트에서 사용할 수 있어요. 처음 모델을 불러올 때는 인터넷 연결이 필요해요.</p>
+      </section>
+      <section class="panel" aria-labelledby="result-title">
+        <p class="section-label">STEP 02 · AI의 생각 확인하기</p>
+        <h2 id="result-title">AI는 어떤 도형이라고 할까요?</h2>
+        <div id="status" class="status" role="status" aria-live="polite">AI 모델을 불러오는 중이에요…</div>
+        <div class="answer" aria-live="polite">
+          <div class="tiny">AI가 예측한 도형</div>
+          <div class="name" id="answer">기다리는 중…</div>
+          <div class="confidence" id="confidence">도형 사진을 준비해 주세요.</div>
+        </div>
+        <div id="bars" aria-label="도형별 AI 예측 확률"></div>
+        <div class="question">
+          <h3>🔎 AI의 말이 정말 맞을까요?</h3>
+          <p id="questionText">AI가 예측한 뒤, 도형의 각과 변을 직접 살펴봐요.</p>
+        </div>
+      </section>
+    </div>
+    <aside class="notice">💡 <strong>탐구 약속</strong> — AI가 100% 확신해도 틀릴 수 있어요. 직각삼각형은 직각이 있는지, 직사각형은 네 각이 직각인지, 정사각형은 네 각이 직각이고 네 변의 길이가 같은지 직접 확인해 봐요. 이 활동에서 ‘직사각형’은 정사각형이 아닌 직사각형을 뜻해요.</aside>
+    <p class="bottom">이 웹사이트는 Teachable Machine으로 학습한 도형 분류 모델을 사용합니다. 사진은 외부 서버로 업로드하지 않습니다.</p>
+  </main>
+  <script>
+    // 1. Teachable Machine에서 다운로드한 모델 3개 파일을 같은 폴더에서 읽습니다.
+    const MODEL_URL = './model.json';
+    const METADATA_URL = './metadata.json';
+    const KOREAN = {right_triangle:'직각삼각형', rectangle:'직사각형', square:'정사각형'};
+    const QUESTIONS = {
+      right_triangle:'삼각형의 세 각 중 직각(90°)이 하나 있나요? 직접 살펴보세요.',
+      rectangle:'네 각이 모두 직각인가요? 그리고 가로와 세로의 길이는 다른가요?',
+      square:'네 각이 모두 직각인가요? 네 변의 길이가 모두 같은가요?'
+    };
+    const imageInput = document.getElementById('imageFile');
+    const preview = document.getElementById('preview');
+    const video = document.getElementById('camera');
+    const placeholder = document.getElementById('placeholder');
+    const status = document.getElementById('status');
+    const answer = document.getElementById('answer');
+    const confidence = document.getElementById('confidence');
+    const questionText = document.getElementById('questionText');
+    const bars = document.getElementById('bars');
+    const startCamera = document.getElementById('startCamera');
+    const stopCamera = document.getElementById('stopCamera');
+    let model = null, stream = null, imageURL = null, requestId = 0, cameraSession = 0;
+
+    function setStatus(message, error=false) {
+      status.textContent = message;
+      status.className = 'status' + (error ? ' error' : '');
+    }
+    function resetResult() {
+      answer.textContent = '분석 대기 중';
+      confidence.textContent = '도형 사진을 준비해 주세요.';
+      questionText.textContent = 'AI가 예측한 뒤, 도형의 각과 변을 직접 살펴봐요.';
+      bars.replaceChildren();
+    }
+    // 2. 사진 또는 카메라 화면을 모델에 넣어 예측합니다.
+    async function predict(element) {
+      if (!model) return;
+      const result = await model.predict(element);
+      const ranked = [...result].sort((a,b) => b.probability-a.probability);
+      const top = ranked[0];
+      if (!top) return;
+      const confident = top.probability >= 0.7;
+      answer.textContent = confident ? (KOREAN[top.className] || top.className) : '잘 모르겠어요 🤔';
+      confidence.textContent = confident
+        ? `가장 높은 예측 확률: ${(top.probability*100).toFixed(1)}%`
+        : `가장 높은 확률이 ${(top.probability*100).toFixed(1)}%로, 70%보다 낮아요.`;
+      questionText.textContent = confident
+        ? (QUESTIONS[top.className] || 'AI의 예측이 맞는지 도형의 성질을 확인해 보세요.')
+        : '어떤 도형인지 각과 변을 직접 살펴보세요. 사진을 더 밝게 찍거나 다시 보여줘도 좋아요.';
+      bars.replaceChildren();
+      for (const item of result) {
+        const row = document.createElement('div'); row.className='bar-item';
+        const head = document.createElement('div'); head.className='bar-head';
+        const label = document.createElement('span'); label.textContent = KOREAN[item.className] || item.className;
+        const number = document.createElement('span'); number.textContent = (item.probability*100).toFixed(1)+'%';
+        head.append(label,number);
+        const track = document.createElement('div'); track.className='bar-track';
+        const fill = document.createElement('div'); fill.className='bar-fill'+(item.className===top.className?' top':'');
+        fill.style.width = Math.max(0,Math.min(100,item.probability*100))+'%';
+        track.append(fill); row.append(head,track); bars.append(row);
+      }
+    }
+    // 3. 선택한 사진은 외부에 전송하지 않고 브라우저에서만 사용합니다.
+    imageInput.addEventListener('change', async () => {
+      const file = imageInput.files && imageInput.files[0];
+      if (!file) return;
+      if (!file.type.startsWith('image/')) { setStatus('이미지 파일을 선택해 주세요.',true); return; }
+      stopCameraStream();
+      const thisRequest = ++requestId;
+      if (imageURL) URL.revokeObjectURL(imageURL);
+      imageURL = URL.createObjectURL(file);
+      preview.style.display='block'; video.style.display='none'; placeholder.style.display='none';
+      preview.onload = async () => {
+        if (thisRequest !== requestId) return;
+        if (!model) { setStatus('모델이 준비되면 사진을 분석할 수 있어요.'); return; }
+        try { setStatus('사진을 분석하는 중이에요…'); await predict(preview); setStatus('분석 완료! AI의 예측을 확인해 보세요.'); }
+        catch(err) { console.error(err); setStatus('사진 분석에 실패했어요. 다른 사진으로 다시 시도해 주세요.',true); }
+      };
+      preview.onerror = () => setStatus('사진을 읽을 수 없어요. 다른 이미지 파일을 선택해 주세요.',true);
+      preview.src=imageURL;
+      resetResult();
+    });
+    function stopCameraStream() {
+      cameraSession++;
+      if (stream) { stream.getTracks().forEach(track => track.stop()); stream=null; }
+      video.pause(); video.srcObject=null;
+      stopCamera.disabled=true; startCamera.disabled=false;
+    }
+    // 4. 카메라를 켜면 브라우저가 권한을 요청합니다. 카메라 영상도 외부로 전송하지 않습니다.
+    startCamera.addEventListener('click', async () => {
+      if (!model) { setStatus('AI 모델을 먼저 불러와야 해요.',true); return; }
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        setStatus('카메라를 사용할 수 없어요. HTTPS로 배포한 주소에서 열거나 사진 업로드를 이용해 주세요.',true); return;
+      }
+      stopCameraStream(); ++requestId;
+      const session = cameraSession;
+      try {
+        setStatus('카메라 연결 중이에요…');
+        const newStream = await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:'environment'}});
+        if (session !== cameraSession) { newStream.getTracks().forEach(t=>t.stop()); return; }
+        stream = newStream; video.srcObject=stream;
+        await video.play();
+        preview.style.display='none'; video.style.display='block'; placeholder.style.display='none';
+        startCamera.disabled=true; stopCamera.disabled=false;
+        setStatus('카메라로 도형을 비춰 보세요. AI가 계속 예측해요.');
+        async function loop() {
+          if (session !== cameraSession || !stream) return;
+          try { if (video.readyState >= 2) await predict(video); }
+          catch(err) { console.error(err); setStatus('카메라 분석 중 오류가 발생했어요.',true); stopCameraStream(); return; }
+          if (session === cameraSession && stream) requestAnimationFrame(loop);
+        }
+        loop();
+      } catch(err) { console.error(err); stopCameraStream(); setStatus('카메라를 열지 못했어요. 권한을 확인하거나 사진 업로드를 이용해 주세요.',true); }
+    });
+    stopCamera.addEventListener('click', () => {
+      stopCameraStream(); video.style.display='none';
+      if (preview.src) preview.style.display='block'; else placeholder.style.display='block';
+      setStatus('카메라를 껐어요. 사진을 업로드해도 좋아요.');
+    });
+    // 5. 파일이 같은 폴더에 있는지 확인하고 Teachable Machine 모델을 로드합니다.
+    async function loadModel() {
+      if (location.protocol === 'file:') {
+        setStatus('HTML 파일을 직접 열면 모델이 차단될 수 있어요. GitHub Pages로 배포한 주소에서 실행해 주세요.',true);
+        answer.textContent='웹사이트 배포 필요'; return;
+      }
+      try {
+        if (!window.tmImage) throw new Error('Teachable Machine 라이브러리를 불러오지 못했습니다.');
+        model = await tmImage.load(MODEL_URL, METADATA_URL);
+        const labels = model.getClassLabels();
+        if (!['right_triangle','rectangle','square'].every(label => labels.includes(label)))
+          throw new Error('모델의 클래스명이 예상한 이름과 다릅니다.');
+        answer.textContent='준비 완료! ✨';
+        confidence.textContent='사진을 올리거나 카메라를 켜 보세요.';
+        setStatus('AI 모델 준비 완료! 도형을 보여주세요.');
+        if (preview.complete && preview.naturalWidth) await predict(preview);
+      } catch(err) {
+        console.error('모델 로딩 오류:',err);
+        answer.textContent='모델 연결 실패';
+        confidence.textContent='모델 파일과 인터넷 연결을 확인해 주세요.';
+        setStatus('모델을 불러오지 못했어요. index.html, model.json, metadata.json, weights.bin이 같은 폴더에 있는지 확인해 주세요.',true);
+      }
+    }
+    window.addEventListener('pagehide',()=>{ stopCameraStream(); if(imageURL) URL.revokeObjectURL(imageURL); });
+    loadModel();
+  </script>
+</body>
+</html>
