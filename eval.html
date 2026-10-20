@@ -14,7 +14,7 @@
 <div class="note"><strong>평가 데이터는 학습에 사용하지 않아요.</strong> 사진은 브라우저에서만 처리하며, 별도 서버로 업로드하거나 저장하지 않습니다. 모델 파일(<code>model.json</code>, <code>metadata.json</code>, <code>weights.bin</code>)은 이 HTML과 같은 폴더에 있어야 합니다. 모델 라이브러리와 모델 파일은 웹에서 불러옵니다.</div>
 <section class="panel"><h2>1. 고정 개발용 사진 선택</h2><p>사진 60장을 한 번에 선택하세요. 파일명은 <code>right_triangle_01.jpg</code>, <code>rectangle_01.jpg</code>, <code>square_01.jpg</code> 형식입니다.</p>
 <div class="controls"><label for="files" class="file-label">📁 사진 여러 장 선택</label><input id="files" type="file" accept="image/*,.jpg,.jpeg,.png,.webp" multiple><button id="run" disabled>▶ 60장 평가 시작</button><button id="download" class="secondary" disabled>⬇ CSV 내려받기</button></div>
-<p class="hint">01~05 정형 도형 / 06~10 연필 손그림 / 11~15 색연필 손그림 / 16~20 모눈종이 손그림</p><div id="status" class="status" role="status" aria-live="polite">AI 모델을 불러오는 중입니다…</div><progress id="progress" value="0" max="100" class="hidden"></progress><div id="fileInfo" class="hint"></div></section>
+<p class="hint">01~05 정형 도형 / 06~10 검정 윤곽선 손그림 / 11~15 색연필 손그림 / 16~20 모눈종이 손그림</p><div id="status" class="status" role="status" aria-live="polite">AI 모델을 불러오는 중입니다…</div><progress id="progress" value="0" max="100" class="hidden"></progress><div id="fileInfo" class="hint"></div></section>
 <div id="results" class="hidden">
 <section class="panel"><h2>2. 전체 평가 결과</h2><div id="metrics" class="metrics"></div></section>
 <section class="panel"><h2>3. 클래스별 정분류율</h2><div class="table-wrap"><table><thead><tr><th>실제 클래스</th><th>정답 / 전체</th><th>정분류율</th></tr></thead><tbody id="perClass"></tbody></table></div></section>
@@ -27,7 +27,7 @@
 // 1. Teachable Machine에서 사용한 실제 클래스명과 화면 표시 이름을 연결한다.
 const CLASSES=['right_triangle','rectangle','square'];
 const KOREAN={right_triangle:'직각삼각형',rectangle:'직사각형',square:'정사각형'};
-const CONDITIONS=[{name:'정형 도형',start:1,end:5},{name:'연필 손그림',start:6,end:10},{name:'색연필 손그림',start:11,end:15},{name:'모눈종이 손그림',start:16,end:20}];
+const CONDITIONS=[{name:'정형 도형',start:1,end:5},{name:'검정 윤곽선 손그림',start:6,end:10},{name:'색연필 손그림',start:11,end:15},{name:'모눈종이 손그림',start:16,end:20}];
 const $=id=>document.getElementById(id);
 let model=null, selected=[], records=[], imageUrls=[];
 function status(text){$('status').textContent=text;}
