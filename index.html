@@ -200,6 +200,11 @@
     .layout .input-actions button,.layout .input-actions .upload {font-size:14px!important;min-height:65px;}
     .layout .stage,.layout .crop-stage,.layout .draw-stage {max-width:100%;}
     .notice {display:none!important;}
+    /* STEP 02 안내는 분석 전후 항상 선명하게 표시 */
+    .layout #resultPanel.waiting {opacity:1;filter:none;}
+    .layout #resultPanel.waiting .answer,.layout #resultPanel.waiting .graph-card,.layout #resultPanel.waiting .retry-tips {opacity:.43;filter:grayscale(.35);}
+    .always-notice {display:block;margin:10px 0 15px;padding:11px 14px;border:1px solid #ead9aa;border-radius:12px;background:#fff8e9;color:#74521d;font-size:16px;line-height:1.4;}
+    .always-notice strong {font-weight:800;}
     .answer {padding:17px 15px;margin:12px 0 14px;min-width:0;}
     .answer .name {font-size:clamp(20px,1.8vw,27px);line-height:1.35;overflow-wrap:break-word;}
     .answer .result-guidance {font-size:15px;font-weight:750;color:#355b88;line-height:1.45;margin-top:8px;}
@@ -219,7 +224,10 @@
     .shape-choices {display:grid;grid-template-columns:1fr 1fr;gap:8px;}
     .shape-choices label {display:flex;align-items:center;gap:7px;padding:11px 9px;background:white;border:1px solid #c9ddce;border-radius:10px;font-size:14px;font-weight:650;cursor:pointer;}
     .shape-choices label:has(input:checked) {background:#d8f1e2;border-color:#3f9265;}
-    .shape-choices input {accent-color:#36835c;}
+    .shape-choices input {accent-color:#36835c;flex-shrink:0;}
+    .shape-choices .choice-shape {width:24px;height:24px;flex-shrink:0;fill:none;stroke:#1f2937;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round;}
+    .shape-choices label span {min-width:0;white-space:nowrap;}
+    @media(max-width:390px){.shape-choices{grid-template-columns:1fr;}}
     .final-feedback {font-weight:700;line-height:1.55;margin-top:12px;color:#294b3a;}
     .final-feedback:empty {display:none;}
     .empty-state {font-size:15px;color:#64748b;line-height:1.6;padding:14px 0;}
@@ -286,6 +294,7 @@
       <section class="panel waiting" id="resultPanel" aria-labelledby="result-title">
         <p class="section-label">STEP 02 </p>
         <h2 id="result-title">AI는 어떤 도형이라고 할까요?</h2>
+        <div class="always-notice" role="note">💡 <strong>AI는 틀릴 수 있어요.</strong></div>
         
         <div class="answer" aria-live="polite">
           
@@ -314,9 +323,9 @@
           <div id="finalChoice" class="final-choice" hidden>
             <h4>내 생각에는 어떤 도형인가요?</h4>
             <div class="shape-choices" id="shapeChoices">
-              <label><input type="radio" name="my_shape" value="right_triangle">직각삼각형</label>
-              <label><input type="radio" name="my_shape" value="rectangle">직사각형</label>
-              <label><input type="radio" name="my_shape" value="square">정사각형</label>
+              <label><input type="radio" name="my_shape" value="right_triangle"><svg class="choice-shape" viewBox="0 0 28 28" aria-hidden="true"><path d="M5 4 V23 H24 Z"/></svg><span>직각삼각형</span></label>
+              <label><input type="radio" name="my_shape" value="rectangle"><svg class="choice-shape" viewBox="0 0 28 28" aria-hidden="true"><rect x="3" y="8" width="22" height="12"/></svg><span>직사각형</span></label>
+              <label><input type="radio" name="my_shape" value="square"><svg class="choice-shape" viewBox="0 0 28 28" aria-hidden="true"><rect x="5" y="5" width="18" height="18"/></svg><span>정사각형</span></label>
               <label><input type="radio" name="my_shape" value="unsure">다시 살펴볼래요</label>
             </div>
             <div id="finalFeedback" class="final-feedback" role="status" aria-live="polite"></div>
