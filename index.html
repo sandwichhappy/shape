@@ -72,7 +72,7 @@
     .draw-actions button {flex:1;}
     .analyze-drawing {display:block;width:100%;margin:13px 0 0;padding:19px 20px;border-radius:19px;font-size:21px;background:#345fe4;color:white;box-shadow:0 6px 16px rgba(82,121,223,.22);}
     .analyze-drawing[hidden] {display:none !important;}
-    .input-actions {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-bottom:14px;}
+    .input-actions {display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; margin-bottom:14px;}
     .input-actions button,.input-actions .upload {min-height:65px; padding:11px 6px; text-align:center; font-size:15px; line-height:1.4;}
     .input-actions .upload {display:flex;}
     .input-actions .active {box-shadow:0 0 0 3px #d6e3ff inset;}
@@ -181,6 +181,12 @@
     .check-item input {accent-color:#36835c;}
     .check-item:has(input:checked) {background:#ecf8f0;border-color:#8cc8a3;}
     .check-feedback {background:#eff8f2;color:#285b40;}
+    #checkPanel .check-item {display:block;cursor:default;}
+    .yn-question {font-weight:650;line-height:1.45;}
+    .yn-options {display:flex;gap:10px;margin-top:10px;}
+    .yn-options label {display:flex;align-items:center;justify-content:center;gap:7px;flex:1;border:1px solid #c9d8d1;border-radius:11px;background:#fff;padding:10px 6px;cursor:pointer;font-size:15px;font-weight:700;}
+    .yn-options label:has(input:checked) {background:#dff2e6;border-color:#5ba27c;color:#1d5d3d;}
+    .yn-options input {width:17px;height:17px;accent-color:#36835c;}
     @media(max-width:850px){.notice{font-size:15px;padding:12px;}.question h3{font-size:21px;}.step-three-title{font-size:18px;}}
 
     /* v15: 고정된 3단계 레이아웃 */
@@ -207,6 +213,15 @@
     #checkPanel .self-check {padding:0;}
     #checkPanel .check-item {font-size:15px;padding:13px 10px;}
     #checkFeedback[hidden],#checkIntro[hidden],#questionText[hidden],#confidence[hidden] {display:none!important;}
+    .final-choice {margin-top:18px;padding:15px;border:2px solid #b9d9c7;border-radius:15px;background:#f0faf3;}
+    .final-choice[hidden] {display:none!important;}
+    .final-choice h4 {margin:0 0 12px;font-size:18px;color:#245d40;}
+    .shape-choices {display:grid;grid-template-columns:1fr 1fr;gap:8px;}
+    .shape-choices label {display:flex;align-items:center;gap:7px;padding:11px 9px;background:white;border:1px solid #c9ddce;border-radius:10px;font-size:14px;font-weight:650;cursor:pointer;}
+    .shape-choices label:has(input:checked) {background:#d8f1e2;border-color:#3f9265;}
+    .shape-choices input {accent-color:#36835c;}
+    .final-feedback {font-weight:700;line-height:1.55;margin-top:12px;color:#294b3a;}
+    .final-feedback:empty {display:none;}
     .empty-state {font-size:15px;color:#64748b;line-height:1.6;padding:14px 0;}
     @media(max-width:1050px) { .layout,.layout.has-result {grid-template-columns:minmax(0,1fr) minmax(0,1fr);} #checkPanel {grid-column:1/-1;} }
     @media(max-width:700px) { .layout,.layout.has-result {grid-template-columns:minmax(0,1fr);} #checkPanel {grid-column:auto;} .layout .panel {padding:17px;} }
@@ -234,7 +249,7 @@
         <div class="input-actions" aria-label="도형 입력 방법">
           <button class="primary" id="startCamera" type="button">📷 1. 카메라로 찍기</button>
           <label class="upload secondary" for="imageFile">🖼️ 2. 사진 올리기<input id="imageFile" type="file" accept="image/*" /></label>
-          <button class="secondary" id="openDrawing" type="button">✏️ 3. 직접 그리기</button>
+          
         </div>
         <div class="camera-actions" id="cameraActions" hidden>
           <button class="primary" id="captureCamera" type="button" disabled>📸 사진 찍기</button>
@@ -252,13 +267,13 @@
           <p class="crop-note">사진을 손가락이나 마우스로 움직여 도형 전체를 맞춰 보세요.</p>
         </div>
         <div class="stage" id="photoStage">
-          <div class="placeholder" id="placeholder"><span class="emoji">✏️ 📐</span><strong>도형을 보여주세요!</strong>사진을 찍거나, 올리거나, 직접 그려 보세요.</div>
+          <div class="placeholder" id="placeholder"><span class="emoji">✏️ 📐</span><strong>도형을 보여주세요!</strong>사진을 찍거나 올려 보세요.</div>
           <img id="preview" alt="내가 선택한 도형 사진" />
           <video id="camera" autoplay muted playsinline aria-label="실시간 카메라 화면"></video>
         </div>
         <button type="button" class="analyze-drawing" id="analyzeDrawing" disabled aria-disabled="true">✨ AI에게 물어보기</button>
         <div id="status" class="status" role="status" aria-live="polite">AI 모델을 불러오는 중이에요…</div>
-        <p class="hint">도형 전체가 보이게 맞춰 주세요. 사진과 그림은 저장되지 않아요.</p>
+        <p class="hint">도형 전체가 보이게 맞춰 주세요. 사진은 저장되지 않아요.</p>
       </section>
       <section class="panel waiting" id="resultPanel" aria-labelledby="result-title">
         <p class="section-label">STEP 02 </p>
@@ -273,7 +288,7 @@
         <section class="graph-card" aria-label="도형별 예측 막대그래프"><div id="bars" aria-label="도형별 AI 예측 정도를 보여주는 막대그래프"></div></section>
         <div id="retryTips" class="retry-tips" hidden>
           <strong>📷 이렇게 다시 찍어 볼까요?</strong>
-          <ol><li>도형의 꼭짓점과 변이 모두 보이게 찍어요.</li><li>그림자가 적고 밝은 곳에서 찍어요.</li><li>도형을 한 개만 크게 찍고, 모눈종이 무늬나 주변 물건은 적게 나오게 해요.</li></ol>
+          <ol><li>도형의 변과 꼭짓점이 잘 보이게 찍어요.</li><li>선이 흐리면 자를 대고 다시 그려 봐요.</li><li>그림자가 적고 밝은 곳에서 찍어요.</li><li>도형 한 개만 크게 찍고 모눈종이 무늬나 주변 물건은 적게 나오게 해요.</li></ol>
           <p>그래도 어렵다면 선생님과 함께 살펴봐요.</p>
         </div>
       </section>
@@ -288,6 +303,16 @@
           <p id="checkIntro" hidden></p>
           <div id="checkItems"></div>
           <div id="checkFeedback" class="check-feedback" role="status" aria-live="polite"></div>
+          <div id="finalChoice" class="final-choice" hidden>
+            <h4>내 생각에는 어떤 도형인가요?</h4>
+            <div class="shape-choices" id="shapeChoices">
+              <label><input type="radio" name="my_shape" value="right_triangle">직각삼각형</label>
+              <label><input type="radio" name="my_shape" value="rectangle">직사각형</label>
+              <label><input type="radio" name="my_shape" value="square">정사각형</label>
+              <label><input type="radio" name="my_shape" value="unsure">다시 살펴볼래요</label>
+            </div>
+            <div id="finalFeedback" class="final-feedback" role="status" aria-live="polite"></div>
+          </div>
           <p id="checkNote" class="check-note"></p>
           <button class="ghost" id="resetChecks" type="button">체크 다시 하기</button>
         </div>
@@ -336,34 +361,68 @@
     const checkFeedback = document.getElementById('checkFeedback');
     const checkNote = document.getElementById('checkNote');
     const resetChecks = document.getElementById('resetChecks');
+    const finalChoice = document.getElementById('finalChoice');
+    const finalFeedback = document.getElementById('finalFeedback');
+    const shapeChoices = document.getElementById('shapeChoices');
     let lastCheckClass = null;
+    function updateFinalFeedback() {
+      const chosen = shapeChoices.querySelector('input:checked')?.value;
+      if (!chosen) { finalFeedback.textContent=''; return; }
+      if (chosen === 'unsure') {
+        finalFeedback.textContent='🔎 도형의 변과 각을 다시 살펴보거나 선생님께 물어보세요.';
+      } else if (chosen === lastCheckClass) {
+        finalFeedback.textContent=`✅ 내 생각과 AI의 예측이 같아요: ${KOREAN[chosen]}`;
+      } else {
+        finalFeedback.textContent=`🔎 내 생각은 ${KOREAN[chosen]}, AI의 예측은 ${KOREAN[lastCheckClass]}이에요. 왜 다른지 변과 각을 다시 확인해 봐요.`;
+      }
+    }
+    shapeChoices.addEventListener('change', updateFinalFeedback);
     function updateCheckFeedback() {
-      const boxes = [...checkItems.querySelectorAll('input[type=checkbox]')];
-      const count = boxes.filter(x=>x.checked).length;
-      if (count === boxes.length && count > 0) checkFeedback.textContent = '✨ 도형의 특징을 모두 확인했어요! AI의 생각과 내가 확인한 특징이 일치해요.';
-      else if (count === 0) checkFeedback.textContent = '사진을 보면서 특징을 하나씩 확인해 봐요. 맞지 않으면 체크하지 않아도 돼요.';
-      else checkFeedback.textContent = `지금 ${count}개를 확인했어요. 나머지 특징도 맞는지 살펴봐요. 맞지 않는 특징이 있다면 AI의 답이 틀렸을 수도 있어요.`;
+      const choices = [...checkItems.querySelectorAll('.check-item')];
+      const values = choices.map(el => el.querySelector('input:checked')?.value || '');
+      const complete = values.length > 0 && values.every(Boolean);
+      if (!complete) {
+        checkFeedback.textContent = '각 질문에 네 또는 아니오를 골라 주세요.';
+        finalChoice.hidden=true;
+        shapeChoices.querySelectorAll('input').forEach(x=>x.checked=false);
+        finalFeedback.textContent='';
+        return;
+      }
+      finalChoice.hidden=false;
+      if (values.every(v => v === 'yes')) {
+        checkFeedback.textContent = `✅ ${KOREAN[lastCheckClass]}의 특징을 모두 확인했어요!`;
+      } else {
+        checkFeedback.textContent = `🔎 ${KOREAN[lastCheckClass]}의 특징과 다른 점이 있어요. AI의 예측이 틀렸을 수도 있어요.`;
+      }
     }
     function showChecklist(className) {
-      if (lastCheckClass !== className) {
-        lastCheckClass = className;
-        checkItems.replaceChildren();
-        for (const question of CHECKS[className] || []) {
-          const label = document.createElement('label'); label.className='check-item';
-          const box = document.createElement('input'); box.type='checkbox'; box.addEventListener('change', updateCheckFeedback);
-          const span = document.createElement('span'); span.textContent=question;
-          label.append(box,span); checkItems.append(label);
+      lastCheckClass = className;
+      checkItems.replaceChildren();
+      finalChoice.hidden=true;
+      shapeChoices.querySelectorAll('input').forEach(x=>x.checked=false);
+      finalFeedback.textContent='';
+      for (let i = 0; i < (CHECKS[className] || []).length; i++) {
+        const question = CHECKS[className][i];
+        const item = document.createElement('div'); item.className='check-item';
+        const prompt = document.createElement('div'); prompt.className='yn-question'; prompt.textContent=question;
+        const options = document.createElement('div'); options.className='yn-options';
+        for (const [value, text] of [['yes','네'],['no','아니오']]) {
+          const label=document.createElement('label');
+          const radio=document.createElement('input'); radio.type='radio'; radio.name=`feature_${i}`; radio.value=value;
+          radio.addEventListener('change',updateCheckFeedback);
+          label.append(radio,document.createTextNode(text)); options.append(label);
         }
-        checkIntro.textContent = `${KOREAN[className]}의 특징이 정말 있는지 사진을 보며 확인해요.`;
-        checkNote.textContent = className === 'rectangle' || className === 'square'
-          ? '정사각형도 직사각형의 한 종류예요. 이 AI 활동에서는 두 도형을 나누어 분류해요.'
-          : '삼각형은 곧은 선분 3개로 둘러싸인 도형이에요.';
-        updateCheckFeedback();
+        item.append(prompt,options); checkItems.append(item);
       }
+      checkIntro.textContent='';
+      checkNote.textContent = className === 'rectangle' || className === 'square'
+        ? '정사각형도 직사각형의 한 종류예요. 이 AI 활동에서는 두 도형을 나누어 분류해요.'
+        : '';
+      updateCheckFeedback();
       selfCheck.hidden = false;
     }
     resetChecks.addEventListener('click', () => {
-      checkItems.querySelectorAll('input[type=checkbox]').forEach(x=>x.checked=false);
+      checkItems.querySelectorAll('input[type=radio]').forEach(x=>x.checked=false);
       updateCheckFeedback();
     });
     const startCamera = document.getElementById('startCamera');
@@ -448,11 +507,11 @@
     }));
     document.getElementById('undoDrawing').addEventListener('click',()=>{drawingState.strokes.pop();renderDrawing();updateAnalyzeAvailability();});
     document.getElementById('clearDrawing').addEventListener('click',()=>{drawingState.strokes=[];drawingState.active=null;renderDrawing();updateAnalyzeAvailability();resetResult();setStatus('그림을 지웠어요. 다시 그려 보세요.');});
-    function hideDrawing(){drawingControls.hidden=true;drawingStage.hidden=true;openDrawing.classList.remove('active');}
-    openDrawing.addEventListener('click',()=>{
+    function hideDrawing(){drawingControls.hidden=true;drawingStage.hidden=true;openDrawing?.classList.remove('active');}
+    openDrawing?.addEventListener('click',()=>{
       stopCameraStream();++requestId;cameraActions.hidden=true;hideCrop();inputMode='drawing';
       drawingControls.hidden=false;drawingStage.hidden=false;photoStage.hidden=true;preview.style.display='none';video.style.display='none';placeholder.style.display='none';
-      openDrawing.classList.add('active');resetResult();renderDrawing();updateAnalyzeAvailability();setStatus('손그림이나 직선으로 도형을 그린 뒤 AI에게 물어보세요.');
+      openDrawing?.classList.add('active');resetResult();renderDrawing();updateAnalyzeAvailability();setStatus('손그림이나 직선으로 도형을 그린 뒤 AI에게 물어보세요.');
     });
     analyzeDrawingButton.addEventListener('click',async()=>{
       if(!model){setStatus('AI 모델을 불러오는 중이에요.',true);return;}
@@ -487,6 +546,7 @@
       resultGuidance.textContent='도형을 준비해 주세요.';
       checkWaiting.hidden=false;
       retryTips.hidden=true; selfCheck.hidden=true; lastCheckClass=null;
+      finalChoice.hidden=true; shapeChoices.querySelectorAll('input').forEach(x=>x.checked=false); finalFeedback.textContent='';
     }
     // 2. 사진 또는 카메라 화면을 모델에 넣어 예측한다.
     async function predict(element) {
@@ -507,7 +567,7 @@
       if(!confident) checkWaiting.textContent='사진을 다시 준비해 주세요.';
       retryTips.hidden = confident;
       if (confident) showChecklist(top.className);
-      else { selfCheck.hidden=true; lastCheckClass=null; }
+      else { selfCheck.hidden=true; lastCheckClass=null; finalChoice.hidden=true; }
       bars.replaceChildren();
       for (const item of result) {
         const row = document.createElement('div'); row.className='bar-item';
@@ -589,7 +649,7 @@
         if (!['right_triangle','rectangle','square'].every(label => labels.includes(label)))
           throw new Error('모델의 클래스명이 예상한 이름과 다릅니다.');
         answer.textContent='AI의 답을 기다려요';
-        confidence.textContent='사진을 찍거나, 올리거나, 직접 그려 보세요.';
+        confidence.textContent='사진을 찍거나 올려 보세요.';
         setStatus('AI 모델 준비 완료! 도형을 보여주세요.');
         // 사진과 그림은 학생이 'AI에게 물어보기'를 누를 때만 분석합니다.
       } catch(err) {
