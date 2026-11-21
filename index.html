@@ -183,35 +183,33 @@
     .check-feedback {background:#eff8f2;color:#285b40;}
     @media(max-width:850px){.notice{font-size:15px;padding:12px;}.question h3{font-size:21px;}.step-three-title{font-size:18px;}}
 
-    /* v14: 첫 화면은 STEP 01만, 분석 후 세 단계 가로 배치 */
-    .layout {display:grid;grid-template-columns:minmax(0,570px);justify-content:center;align-items:stretch;max-width:1380px;gap:16px;}
-    .layout.has-result {grid-template-columns:minmax(0,1.15fr) minmax(0,1fr) minmax(0,1fr);justify-content:stretch;}
-    .layout > .panel[hidden] {display:none!important;}
-    .layout .panel {height:100%;padding:20px;}
-    .layout.has-result .input-actions {flex-wrap:wrap;}
-    .layout.has-result .input-actions button,.layout.has-result .input-actions .upload {font-size:14px!important;min-height:65px;}
-    .layout.has-result .stage,.layout.has-result .crop-stage,.layout.has-result .draw-stage {max-width:100%;}
+    /* v15: 고정된 3단계 레이아웃 */
+    .layout,.layout.has-result {display:grid;grid-template-columns:minmax(0,1.12fr) minmax(0,1fr) minmax(0,1fr);justify-content:stretch;align-items:stretch;max-width:1380px;gap:16px;}
+    .wrap {max-width:1450px;}
+    .layout .panel {height:100%;padding:20px;min-width:0;transition:opacity .2s ease,filter .2s ease;}
+    .layout .panel.waiting {opacity:.43;filter:grayscale(.35);}
+    .layout .panel.waiting .answer,.layout .panel.waiting .graph-card,.layout .panel.waiting .self-check {pointer-events:none;}
     .section-label {font-size:26px;margin-bottom:9px;}
-    .notice {font-size:16px;margin:12px 0 16px;}
-    .answer {padding:17px 15px;margin-bottom:14px;}
-    .answer .name {font-size:clamp(22px,2vw,29px);}
+    .layout .input-actions {flex-wrap:wrap;}
+    .layout .input-actions button,.layout .input-actions .upload {font-size:14px!important;min-height:65px;}
+    .layout .stage,.layout .crop-stage,.layout .draw-stage {max-width:100%;}
+    .notice {display:none!important;}
+    .answer {padding:17px 15px;margin:12px 0 14px;min-width:0;}
+    .answer .name {font-size:clamp(20px,1.8vw,27px);line-height:1.35;overflow-wrap:break-word;}
+    .answer .result-guidance {font-size:15px;font-weight:750;color:#355b88;line-height:1.45;margin-top:8px;}
     .graph-card {padding:18px 15px 5px;}
-    #checkPanel {border-top:3px solid #8cc8a3;}
-    #checkPanel .question {padding:0 0 14px;border:0;border-radius:0;background:transparent;}
+    .bar-head {justify-content:flex-start;gap:9px;align-items:center;}
+    .shape-icon {width:23px;height:23px;flex:none;stroke:#1c2430;fill:none;stroke-width:2.3;stroke-linecap:round;stroke-linejoin:round;}
+    #checkPanel {border-top:5px solid #8cc8a3;}
+    #checkPanel .question {padding:0 0 14px;border:0;border-radius:0;background:transparent;margin-top:0;}
     #checkPanel .question h3 {font-size:26px;margin:0 0 8px;color:#246447;}
     #checkPanel .question h2 {font-size:21px;margin:0;color:#294b3a;}
     #checkPanel .self-check {padding:0;}
     #checkPanel .check-item {font-size:15px;padding:13px 10px;}
     #checkFeedback[hidden],#checkIntro[hidden],#questionText[hidden],#confidence[hidden] {display:none!important;}
-    @media(max-width:1050px) {
-      .layout.has-result {grid-template-columns:minmax(0,1fr) minmax(0,1fr);}
-      #checkPanel {grid-column:1/-1;}
-    }
-    @media(max-width:700px) {
-      .layout,.layout.has-result {grid-template-columns:minmax(0,1fr);}
-      #checkPanel {grid-column:auto;}
-      .layout .panel {padding:17px;}
-    }
+    .empty-state {font-size:15px;color:#64748b;line-height:1.6;padding:14px 0;}
+    @media(max-width:1050px) { .layout,.layout.has-result {grid-template-columns:minmax(0,1fr) minmax(0,1fr);} #checkPanel {grid-column:1/-1;} }
+    @media(max-width:700px) { .layout,.layout.has-result {grid-template-columns:minmax(0,1fr);} #checkPanel {grid-column:auto;} .layout .panel {padding:17px;} }
   </style>
   <!-- 6주차 수업 조건: Teachable Machine에서 제공하는 라이브러리와 버전을 사용합니다. -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
@@ -262,13 +260,14 @@
         <div id="status" class="status" role="status" aria-live="polite">AI 모델을 불러오는 중이에요…</div>
         <p class="hint">도형 전체가 보이게 맞춰 주세요. 사진과 그림은 저장되지 않아요.</p>
       </section>
-      <section class="panel" id="resultPanel" aria-labelledby="result-title" hidden>
+      <section class="panel waiting" id="resultPanel" aria-labelledby="result-title">
         <p class="section-label">STEP 02 </p>
         <h2 id="result-title">AI는 어떤 도형이라고 할까요?</h2>
-        <aside class="notice" role="note">💡 <strong>AI도 틀릴 수 있어요.</strong> 도형의 특징을 직접 확인해요.</aside>
+        
         <div class="answer" aria-live="polite">
           
-          <div class="name" id="answer">기다리는 중…</div>
+          <div class="name" id="answer">AI의 답을 기다려요</div>
+          <div class="result-guidance" id="resultGuidance">도형을 준비해 주세요.</div>
           <div class="confidence" id="confidence" hidden></div>
         </div>
         <section class="graph-card" aria-label="도형별 예측 막대그래프"><div id="bars" aria-label="도형별 AI 예측 정도를 보여주는 막대그래프"></div></section>
@@ -278,12 +277,13 @@
           <p>그래도 어렵다면 선생님과 함께 살펴봐요.</p>
         </div>
       </section>
-      <section class="panel" id="checkPanel" aria-label="STEP 03 직접 확인" hidden>
+      <section class="panel waiting" id="checkPanel" aria-label="STEP 03 직접 확인">
         <div class="question">
           <h3>STEP 03</h3>
           <h2>직접 확인해 볼까요? 🔎</h2>
           <p id="questionText" hidden></p>
         </div>
+        <div id="checkWaiting" class="empty-state">AI에게 물어보면 여기서 직접 확인할 수 있어요.</div>
         <div id="selfCheck" class="self-check" hidden>
           <p id="checkIntro" hidden></p>
           <div id="checkItems"></div>
@@ -306,7 +306,7 @@
       unsure: "🤔 잘 모르겠어요",
       notice: "AI가 틀릴 수도 있어요. 도형의 특징을 직접 확인해 봐요."
     };
-    const ICONS = {right_triangle:'📐',rectangle:'▭',square:'□'};
+    const ICONS = {right_triangle:'',rectangle:'',square:''};
     const CHECKS = {
       right_triangle:['곧은 선분 3개로 둘러싸여 있나요?','세 각 중 직각인 각이 하나 있나요?'],
       rectangle:['곧은 선분 4개로 둘러싸여 있나요?','네 각이 모두 직각인가요?','이웃한 두 변의 길이가 서로 다른가요?'],
@@ -325,6 +325,8 @@
     const status = document.getElementById('status');
     const answer = document.getElementById('answer');
     const confidence = document.getElementById('confidence');
+    const resultGuidance = document.getElementById('resultGuidance');
+    const checkWaiting = document.getElementById('checkWaiting');
     const questionText = document.getElementById('questionText');
     const bars = document.getElementById('bars');
     const retryTips = document.getElementById('retryTips');
@@ -475,13 +477,15 @@
       status.className = 'status' + (error ? ' error' : '');
     }
     function resetResult() {
-      answer.textContent = '분석 대기 중';
+      answer.textContent = 'AI의 답을 기다려요';
       confidence.textContent = '도형 사진을 준비해 주세요.';
       questionText.textContent = '';
       bars.replaceChildren();
       document.getElementById("lessonLayout").classList.remove("has-result");
-      document.getElementById("resultPanel").hidden=true;
-      document.getElementById("checkPanel").hidden=true;
+      document.getElementById("resultPanel").classList.add("waiting");
+      document.getElementById("checkPanel").classList.add("waiting");
+      resultGuidance.textContent='도형을 준비해 주세요.';
+      checkWaiting.hidden=false;
       retryTips.hidden=true; selfCheck.hidden=true; lastCheckClass=null;
     }
     // 2. 사진 또는 카메라 화면을 모델에 넣어 예측한다.
@@ -492,12 +496,15 @@
       const top = ranked[0];
       if (!top) return;
       const confident = top.probability >= CONFIG.threshold;
-      answer.textContent = confident ? `${ICONS[top.className] || '🔎'} ${KOREAN[top.className] || top.className} 같아요!` : CONFIG.unsure;
+      answer.textContent = confident ? `${KOREAN[top.className] || top.className} 같아요!` : CONFIG.unsure;
       confidence.textContent = '';
       questionText.textContent = '';
       document.getElementById("lessonLayout").classList.add("has-result");
-      document.getElementById("resultPanel").hidden=false;
-      document.getElementById("checkPanel").hidden=false;
+      document.getElementById("resultPanel").classList.remove("waiting");
+      document.getElementById("checkPanel").classList.remove("waiting");
+      resultGuidance.textContent=confident?'도형의 특징을 직접 확인해요.':'사진을 다시 찍어 볼까요?';
+      checkWaiting.hidden=confident;
+      if(!confident) checkWaiting.textContent='사진을 다시 준비해 주세요.';
       retryTips.hidden = confident;
       if (confident) showChecklist(top.className);
       else { selfCheck.hidden=true; lastCheckClass=null; }
@@ -506,7 +513,13 @@
         const row = document.createElement('div'); row.className='bar-item';
         const head = document.createElement('div'); head.className='bar-head';
         const label = document.createElement('span'); label.textContent = KOREAN[item.className] || item.className;
-        head.append(label);
+        const icon = document.createElementNS('http://www.w3.org/2000/svg','svg');
+        icon.setAttribute('viewBox','0 0 28 28');icon.setAttribute('class','shape-icon');icon.setAttribute('aria-hidden','true');
+        const shape = document.createElementNS('http://www.w3.org/2000/svg',item.className==='right_triangle'?'path':'rect');
+        if(item.className==='right_triangle') shape.setAttribute('d','M5 4 V23 H24 Z');
+        else if(item.className==='rectangle'){shape.setAttribute('x','3');shape.setAttribute('y','7');shape.setAttribute('width','22');shape.setAttribute('height','14');}
+        else {shape.setAttribute('x','5');shape.setAttribute('y','5');shape.setAttribute('width','18');shape.setAttribute('height','18');}
+        icon.append(shape);head.append(icon,label);
         const track = document.createElement('div'); track.className='bar-track';
         const fill = document.createElement('div'); fill.className='bar-fill'+(item.className===top.className?' top':'');
         fill.style.width = Math.max(0,Math.min(100,item.probability*100))+'%';
@@ -575,7 +588,7 @@
         const labels = model.getClassLabels();
         if (!['right_triangle','rectangle','square'].every(label => labels.includes(label)))
           throw new Error('모델의 클래스명이 예상한 이름과 다릅니다.');
-        answer.textContent='준비 완료! ✨';
+        answer.textContent='AI의 답을 기다려요';
         confidence.textContent='사진을 찍거나, 올리거나, 직접 그려 보세요.';
         setStatus('AI 모델 준비 완료! 도형을 보여주세요.');
         // 사진과 그림은 학생이 'AI에게 물어보기'를 누를 때만 분석합니다.
