@@ -154,6 +154,34 @@
     .analyze-drawing:disabled {background:#e8ebf0!important;color:#929cad!important;box-shadow:none!important;opacity:1;cursor:not-allowed;transform:none;filter:none;}
     .analyze-drawing:not(:disabled):hover {background:#294fb8!important;}
     @media(max-width:850px){header{min-height:154px;padding:47px 12px 15px;}.header-art{margin-top:6px;}.input-actions button,.input-actions .upload{font-size:clamp(12px,3vw,17px)!important;padding:10px 4px;min-height:72px;}}
+
+    /* v13: 결과 영역 정보 위계 및 학습 행동 구분 */
+    .section-label {font-size:25px;line-height:1.2;margin-bottom:10px;}
+    .notice {display:flex;align-items:center;gap:10px;margin:0 0 18px;padding:15px 17px;background:#fff7e5;border:2px solid #f1d79d;border-radius:16px;color:#674a1c;font-size:17px;font-weight:650;line-height:1.55;}
+    .notice strong {font-weight:900;color:#8b4d10;}
+    .status[hidden] {display:none!important;}
+    .answer {background:#eaf1ff;border:2px solid #cbdcf9;padding:19px 20px;margin-bottom:14px;border-radius:19px;}
+    .answer .tiny {font-size:14px;color:#4167a5;}
+    .answer .name {color:#233f78;font-size:clamp(25px,3vw,34px);}
+    .answer .confidence {color:#526f9c;}
+    .graph-card {background:#f8fafc;border:1px solid #e1e7f0;border-radius:18px;padding:17px 18px 5px;margin:0 0 22px;}
+    .graph-title {margin:0 0 17px;font-size:18px;color:#42546e;}
+    .bar-item {margin-bottom:15px;}
+    .bar-head {font-size:15px;color:#374860;}
+    .bar-track {height:14px;background:#e7ecf3;}
+    .bar-fill {background:#a9bad3;}
+    .bar-fill.top {background:#6386d5;}
+    .question {margin:0;padding:18px 18px 13px;background:#ecf7f0;border:2px solid #cce6d5;border-radius:18px;}
+    .question h3 {font-size:24px;color:#246447;line-height:1.35;}
+    .step-three-title {font-size:20px;}
+    .question p {color:#466d58;font-size:15px;}
+    .self-check {margin:0;padding:15px 3px 0;}
+    .self-check h3 {color:#2c614a;font-size:18px;margin-bottom:8px;}
+    .check-item {background:#fff;border:2px solid #d8e7dc;border-radius:14px;font-size:17px;padding:14px;}
+    .check-item input {accent-color:#36835c;}
+    .check-item:has(input:checked) {background:#ecf8f0;border-color:#8cc8a3;}
+    .check-feedback {background:#eff8f2;color:#285b40;}
+    @media(max-width:850px){.notice{font-size:15px;padding:12px;}.question h3{font-size:21px;}.step-three-title{font-size:18px;}}
   </style>
   <!-- 6주차 수업 조건: Teachable Machine에서 제공하는 라이브러리와 버전을 사용합니다. -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
@@ -173,7 +201,7 @@
     </header>
     <div class="layout">
       <section class="panel" aria-labelledby="upload-title">
-        <p class="section-label">STEP 01 <span class="step-desc">도형 보여주기</span></p>
+        <p class="section-label">STEP 01 </p>
         <h2 id="upload-title">도형 사진을 준비해요</h2>
         <div class="input-actions" aria-label="도형 입력 방법">
           <button class="primary" id="startCamera" type="button">📷 1. 카메라로 찍기</button>
@@ -204,7 +232,7 @@
         <p class="hint">도형 전체가 보이게 맞춰 주세요. 사진과 그림은 저장되지 않아요.</p>
       </section>
       <section class="panel" aria-labelledby="result-title">
-        <p class="section-label">STEP 02 <span class="step-desc">AI의 생각 확인하기</span></p>
+        <p class="section-label">STEP 02 </p>
         <h2 id="result-title">AI는 어떤 도형이라고 할까요?</h2>
         <aside class="notice" role="note">💡 <strong>AI도 틀릴 수 있어요.</strong> 도형의 특징을 직접 확인해요.</aside>
         <div id="status" class="status" role="status" aria-live="polite">AI 모델을 불러오는 중이에요…</div>
@@ -213,18 +241,18 @@
           <div class="name" id="answer">기다리는 중…</div>
           <div class="confidence" id="confidence">도형 사진을 준비해 주세요.</div>
         </div>
-        <div id="bars" aria-label="도형별 AI 예측 정도를 보여주는 막대그래프"></div>
+        <section class="graph-card" aria-label="AI의 예측 비교"><h3 class="graph-title">📊 AI는 이렇게 생각했어요</h3><div id="bars" aria-label="도형별 AI 예측 정도를 보여주는 막대그래프"></div></section>
         <div id="retryTips" class="retry-tips" hidden>
           <strong>📷 이렇게 다시 찍어 볼까요?</strong>
           <ol><li>도형의 꼭짓점과 변이 모두 보이게 찍어요.</li><li>그림자가 적고 밝은 곳에서 찍어요.</li><li>도형을 한 개만 크게 찍고, 모눈종이 무늬나 주변 물건은 적게 나오게 해요.</li></ol>
           <p>그래도 어렵다면 선생님과 함께 살펴봐요.</p>
         </div>
         <div class="question">
-          <h3>STEP 03 · 직접 확인해 볼까요? 🔎</h3>
+          <h3>STEP 03 <span class="step-three-title">직접 확인해 볼까요? 🔎</span></h3>
           <p id="questionText">AI가 예측한 뒤, 도형의 각과 변을 직접 살펴봐요.</p>
         </div>
         <div id="selfCheck" class="self-check" hidden>
-          <h3>AI의 생각이 맞는지 체크해 봐요!</h3>
+          <h3>☑️ AI의 생각이 맞는지 확인해요!</h3>
           <p id="checkIntro">사진 속 도형을 살펴보고, 맞는 특징에 표시해 보세요.</p>
           <div id="checkItems"></div>
           <div id="checkFeedback" class="check-feedback" role="status" aria-live="polite">도형의 특징을 하나씩 확인해요.</div>
@@ -403,7 +431,7 @@
         if(!cropState.source){setStatus('먼저 사진을 찍거나 올려 주세요.',true);return;}
         renderCrop();target=cropCanvas;
       } else {setStatus('먼저 사진을 찍거나 올리거나 직접 그려 주세요.',true);return;}
-      try{setStatus('AI가 도형을 살펴보는 중이에요…');await predict(target);setStatus('분석 완료! 도형의 특징을 직접 확인해 봐요.');
+      try{setStatus('AI가 도형을 살펴보는 중이에요…');await predict(target);setStatus('');
         if(window.innerWidth<=850) document.getElementById('result-title').scrollIntoView({behavior:'smooth',block:'start'});
       }catch(err){console.error(err);setStatus('분석에 실패했어요. 다시 시도해 주세요.',true);}
     });
@@ -411,6 +439,7 @@
 
     function setStatus(message, error=false) {
       status.textContent = message;
+      status.hidden = !message;
       status.className = 'status' + (error ? ' error' : '');
     }
     function resetResult() {
