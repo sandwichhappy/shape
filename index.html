@@ -3,29 +3,32 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>AI 도형 탐험대 | 초등학교 3학년</title>
+  <title>AI로 평면도형 구별하기 | 초등학교 3학년</title>
   <style>
-    :root { --navy:#172f57; --blue:#2563eb; --sky:#eff6ff; --ink:#253650; --muted:#64748b; --line:#dbe5f1; }
+    :root { --navy:#33476d; --blue:#5b86dd; --sky:#f0f6ff; --ink:#34435d; --muted:#6f7c91; --line:#e5eaf4; }
     * { box-sizing:border-box; }
-    body { margin:0; font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif; color:var(--ink); background:linear-gradient(155deg,#eff7ff 0%,#f8fbff 55%,#fff8ef 100%); min-height:100vh; }
-    .wrap { max-width:1020px; margin:0 auto; padding:36px 20px 64px; }
-    header { text-align:center; margin-bottom:27px; }
-    .eyebrow { display:inline-block; color:#1d4ed8; background:#dbeafe; padding:8px 14px; border-radius:99px; font-size:13px; font-weight:800; letter-spacing:.04em; }
-    h1 { margin:14px 0 10px; font-size:clamp(29px,5vw,45px); color:var(--navy); letter-spacing:-.04em; }
-    header p { margin:0; font-size:16px; line-height:1.65; color:var(--muted); }
-    .layout { display:grid; grid-template-columns:1.04fr .96fr; gap:20px; }
-    .panel { background:#fff; border:1px solid #e5edf6; border-radius:24px; box-shadow:0 14px 45px rgba(40,70,120,.07); padding:25px; min-width:0; }
-    .section-label { color:#1d4ed8; font-weight:800; font-size:13px; margin:0 0 7px; }
-    h2 { margin:0 0 17px; font-size:22px; letter-spacing:-.025em; color:var(--navy); }
+    body { margin:0; font-family: "Pretendard", "Noto Sans KR", "Malgun Gothic", system-ui, sans-serif; color:var(--ink); background:radial-gradient(circle at 10% 7%,#ffe9ef 0,transparent 27%),radial-gradient(circle at 90% 15%,#e4f7e8 0,transparent 29%),linear-gradient(150deg,#f3f5ff,#fffaf2); min-height:100vh; }
+    .wrap { max-width:1240px; margin:0 auto; padding:20px 20px 54px; }
+    header {display:flex;align-items:center;justify-content:space-between;gap:16px;text-align:left;margin:0 auto 17px;max-width:1240px;padding:15px 22px;background:linear-gradient(135deg,#f0f6ff,#fff8f4);border:1px solid #e4eafa;border-radius:25px;box-shadow:0 8px 22px rgba(71,87,138,.055);}
+    .header-top {display:flex;justify-content:flex-start;margin-bottom:8px;}
+    .header-art {display:flex;align-items:center;justify-content:center;gap:5px;flex-shrink:0;}
+    .header-art svg {width:33px;height:33px;overflow:visible;}
+    .eyebrow {display:inline-block;color:#4267a3;background:#e0eaff;padding:6px 10px;border-radius:99px;font-size:11px;font-weight:750;}
+    h1 {margin:0 0 5px;font-size:clamp(21px,3.4vw,29px);color:var(--navy);letter-spacing:-.04em;}
+    header p {margin:0;font-size:13px;line-height:1.5;color:var(--muted);}
+    .layout { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(0,1fr); gap:18px; max-width:1240px; margin:0 auto; align-items:start; }
+    .panel { background:#fff; border:1px solid #e5edf6; border-radius:30px; box-shadow:0 12px 30px rgba(71,87,138,.09); padding:22px; min-width:0; }
+    .section-label { color:#2456bb; font-weight:900; font-size:21px; margin:0 0 9px; letter-spacing:-.035em; }
+    h2 { margin:0 0 17px; font-size:23px; letter-spacing:-.025em; color:var(--navy); }
     .actions { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:15px; }
-    button, .upload { border:0; border-radius:13px; padding:13px 16px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; gap:7px; }
+    button, .upload { border:0; border-radius:18px; padding:14px 17px; font-size:15px; font-weight:800; cursor:pointer; font-family:inherit; display:inline-flex; align-items:center; justify-content:center; gap:7px; }
     button:focus-visible,.upload:focus-within { outline:3px solid #93c5fd; outline-offset:3px; }
-    .primary { background:var(--blue); color:#fff; }
-    .secondary { background:#eaf1ff; color:#1e40af; }
-    .ghost { background:#f1f5f9; color:#475569; }
+    .primary { background:#718fe0; color:#fff; }
+    .secondary { background:#eaf2ff; color:#3c60a8; }
+    .ghost { background:#f3f2fa; color:#59647e; }
     button:disabled { opacity:.45; cursor:not-allowed; }
     input[type=file] { display:none; }
-    .stage { background:#f8fbff; border:2px dashed #c9d8ec; border-radius:18px; min-height:300px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
+    .stage { background:#fafbff; border:2px dashed #d5dff1; border-radius:24px; min-height:230px; display:flex; align-items:center; justify-content:center; overflow:hidden; position:relative; }
     .stage img,.stage video { display:none; width:100%; max-height:410px; object-fit:contain; }
     .placeholder { padding:38px 18px; text-align:center; color:#71839b; }
     .placeholder .emoji { font-size:62px; display:block; margin-bottom:12px; }
@@ -33,7 +36,7 @@
     .hint { color:var(--muted); font-size:13px; line-height:1.65; margin:12px 0 0; }
     .status { border-radius:12px; background:#f1f5f9; color:#475569; padding:11px 14px; font-size:13px; margin-bottom:17px; line-height:1.5; }
     .status.error { background:#fff1f2; color:#be123c; }
-    .answer { background:var(--sky); border-radius:17px; padding:19px; margin-bottom:20px; }
+    .answer { background:#edf6ff; border-radius:23px; padding:19px; margin-bottom:20px; }
     .answer .tiny { color:#5472a0; font-size:13px; font-weight:800; }
     .answer .name { color:var(--navy); font-size:clamp(23px,3vw,32px); font-weight:900; margin:6px 0; }
     .answer .confidence { font-size:14px; color:#527098; }
@@ -41,13 +44,116 @@
     .bar-head { display:flex; justify-content:space-between; font-size:14px; font-weight:750; margin-bottom:8px; }
     .bar-track { background:#edf2f8; height:13px; border-radius:99px; overflow:hidden; }
     .bar-fill { height:100%; width:0; background:#93c5fd; border-radius:99px; transition:width .25s; }
-    .bar-fill.top { background:#2563eb; }
-    .question { margin-top:23px; border-top:1px solid var(--line); padding-top:19px; }
-    .question h3 { font-size:18px; margin:0 0 9px; color:var(--navy); }
+    .bar-fill.top { background:#7796e6; }
+    .retry-tips { background:#fff8e8; border:1px solid #f1d69a; border-radius:14px; padding:16px; margin:12px 0; line-height:1.7; }
+    .retry-tips[hidden], .self-check[hidden] { display:none !important; }
+    .retry-tips ol { margin:8px 0; padding-left:22px; }
+    .self-check { border-top:0; margin-top:9px; padding-top:4px; }
+    .self-check h3 { color:var(--navy); margin:0 0 8px; font-size:18px; }
+    .check-item { display:flex; align-items:flex-start; gap:12px; background:#f8fbff; border:2px solid #dfe9f9; border-radius:14px; padding:14px; margin:9px 0; font-size:17px; line-height:1.5; cursor:pointer; }
+    .check-item input { width:21px; height:21px; margin:1px 0 0; accent-color:#2563eb; flex-shrink:0; }
+    .check-feedback { border-radius:12px; padding:13px; background:#eef6ff; color:#1e3a64; margin-top:12px; line-height:1.6; font-weight:650; }
+    .check-note { color:var(--muted); font-size:13px; line-height:1.6; margin:9px 0; }
+    .question { margin-top:23px; border-top:0; background:#fff3dc; border-radius:19px; padding:16px 17px; }
+    .question h3 { font-size:22px; margin:0 0 9px; color:#8a4a0a; }
     .question p { line-height:1.75; margin:0; font-size:15px; }
-    .notice { margin-top:21px; background:#fff9ed; border:1px solid #f9e3b8; padding:16px 19px; border-radius:15px; color:#75521a; line-height:1.7; font-size:14px; }
+    .notice { margin:12px 0 17px; background:#edf4ff; border:1px solid #dbe6fa; padding:12px 15px; border-radius:13px; color:#31527e; line-height:1.5; font-size:15px; }
     .bottom { text-align:center; margin-top:21px; color:#7a8ca3; font-size:12px; }
-    @media(max-width:760px) { .layout{grid-template-columns:1fr;} .wrap{padding:24px 14px 44px;} .panel{padding:19px;} .stage{min-height:250px;} .actions > * {flex:1;} }
+    .draw-controls { margin:12px 0 14px; padding:14px; background:#f9f9ff; border:1px solid #e6e8f6; border-radius:21px; }
+    .draw-controls[hidden], .draw-stage[hidden], .stage[hidden] {display:none !important;}
+    .draw-controls .control-row { display:flex; align-items:center; gap:9px; flex-wrap:wrap; margin-bottom:10px; }
+    .draw-controls .control-row:last-child {margin-bottom:0;}
+    .draw-controls .control-label {font-size:13px; font-weight:800; color:#596780; min-width:46px;}
+    .draw-controls button {padding:9px 13px; font-size:13px; border-radius:14px; background:#fff; border:1px solid #dce3f1; color:#52627e;}
+    .draw-controls button.selected {background:#dfe9ff; border-color:#9bb4ed; color:#2f5599;}
+    .draw-stage {margin-bottom:12px; background:white; border:2px solid #dfe7f4; border-radius:22px; overflow:hidden; touch-action:none;}
+    #drawingCanvas {display:block; width:100%; height:auto; aspect-ratio:1/1; touch-action:none; cursor:crosshair;}
+    .draw-actions {display:flex; flex-wrap:wrap; gap:8px; margin-top:12px;}
+    .draw-actions button {flex:1;}
+    .analyze-drawing {display:block;width:100%;margin:13px 0 0;padding:19px 20px;border-radius:19px;font-size:21px;background:#345fe4;color:white;box-shadow:0 6px 16px rgba(82,121,223,.22);}
+    .analyze-drawing[hidden] {display:none !important;}
+    .input-actions {display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:9px; margin-bottom:14px;}
+    .input-actions button,.input-actions .upload {min-height:65px; padding:11px 6px; text-align:center; font-size:15px; line-height:1.4;}
+    .input-actions .upload {display:flex;}
+    .input-actions .active {box-shadow:0 0 0 3px #d6e3ff inset;}
+    .crop-controls {margin:11px 0 0;padding:11px 12px;background:#f5f8ff;border-radius:16px;}
+    .crop-controls[hidden], .crop-stage[hidden] {display:none!important;}
+    .crop-stage {width:min(100%,440px);aspect-ratio:1/1;margin:0 auto;border:2px solid #dfe7f4;border-radius:20px;overflow:hidden;background:white;touch-action:none;}
+    #cropCanvas {width:100%;height:100%;display:block;touch-action:none;cursor:grab;}
+    #cropCanvas:active {cursor:grabbing;}
+    .zoom-row {display:flex;align-items:center;gap:12px;font-size:13px;font-weight:700;color:#536684;}
+    #cropZoom {flex:1;min-width:0;accent-color:#5279df;}
+    .crop-note {font-size:12px;color:#6b7890;margin:7px 0 0;text-align:center;}
+    .camera-actions {display:flex; gap:8px; flex-wrap:wrap; margin-bottom:12px;}
+    .camera-actions[hidden] {display:none;}
+    .camera-actions button {flex:1; font-size:13px;}
+    @media(max-width:850px) { .layout{grid-template-columns:1fr;} .wrap{padding:24px 14px 44px;} .panel{padding:19px;} .stage{min-height:230px;} header{padding:13px 14px;} .header-art svg{width:25px;height:25px;} .actions > * {flex:1;} .input-actions button,.input-actions .upload{font-size:12px;padding:10px 5px;} }
+    .step-desc {font-size:15px;font-weight:750;color:#687a9b;margin-left:7px;vertical-align:2px;letter-spacing:0;}
+    .panel:first-child {border-top:5px solid #6e96ec;}
+    .panel:nth-child(2) {border-top:5px solid #e6ac54;}
+    .input-actions button:first-child {background:#4369df;}
+    .input-actions .upload {background:#e7f1ff;color:#24529e;}
+    #openDrawing {background:#efe8ff;color:#6441a5;}
+    .input-actions button:hover,.input-actions .upload:hover,.analyze-drawing:hover {filter:brightness(.96);transform:translateY(-1px);}
+    .analyze-drawing {min-height:68px;}
+    .question p {font-size:15px;}
+    .check-item:has(input:checked) {background:#edf9f2;border-color:#8dc8a4;}
+    @media(max-width:850px){.step-desc{font-size:14px;} .section-label{font-size:20px;}}
+
+    /* v10: 하나의 색상 체계와 일관된 정보 위계 */
+    :root {--navy:#263c66;--blue:#4668d8;--sky:#eef3ff;--ink:#34435d;--muted:#71809a;--line:#e3e9f4;}
+    body {background:#f5f7fc;}
+    .wrap {max-width:1240px;padding-top:18px;}
+    header {position:relative;display:grid;grid-template-columns:1fr auto 1fr;align-items:center;min-height:128px;background:#edf3ff;border:1px solid #dce6fa;border-radius:24px;padding:18px 25px;box-shadow:none;text-align:center;}
+    .header-copy {grid-column:2;min-width:0;text-align:center;}
+    .header-top {position:absolute;left:22px;top:17px;margin:0;}
+    .eyebrow {background:#dce8ff;color:#355caa;font-size:12px;padding:7px 12px;}
+    h1 {font-size:clamp(23px,2.7vw,32px);margin:0 0 6px;}
+    header p {font-size:14px;}
+    .header-art {grid-column:3;justify-self:end;gap:4px;}
+    .header-art svg {width:31px;height:31px;}
+    .layout {grid-template-columns:minmax(0,1fr) minmax(0,1fr);align-items:stretch;gap:18px;}
+    .panel {border:1px solid #e1e7f2;border-radius:24px;box-shadow:0 8px 22px rgba(49,70,111,.045);padding:23px;min-width:0;}
+    .panel:first-child,.panel:nth-child(2) {border-top:1px solid #e1e7f2;}
+    .section-label {font-size:23px;color:#3156a8;margin-bottom:7px;}
+    .step-desc {font-size:16px;color:#617391;}
+    h2 {font-size:22px;margin-bottom:16px;}
+    .input-actions {gap:9px;}
+    .input-actions button,.input-actions .upload {background:#e9effd!important;color:#31559a!important;border:1px solid #d9e4fa;box-shadow:none!important;min-height:67px;border-radius:15px;font-size:14px;}
+    .input-actions button.active,.input-actions .upload.active {background:#dce7ff!important;border-color:#7899e6;box-shadow:0 0 0 2px #b5c9f8 inset!important;}
+    .input-actions button:hover,.input-actions .upload:hover {background:#dce7ff!important;}
+    .analyze-drawing {background:#355fd4!important;color:#fff!important;border-radius:17px;min-height:70px;font-size:21px;box-shadow:0 6px 14px rgba(53,95,212,.16);}
+    .analyze-drawing:hover {background:#284fb9!important;}
+    .question {background:transparent;border-top:2px solid #e3e9f4;border-radius:0;padding:19px 0 5px;margin-top:21px;}
+    .question h3 {font-size:23px;color:#3156a8;}
+    .question p {color:#68788e;}
+    .answer {background:#f0f4fc;border-radius:18px;}
+    .notice {background:#edf3ff;color:#355483;border:1px solid #dfe8fb;}
+    @media(max-width:850px) {
+      .layout {grid-template-columns:1fr;}
+      header {grid-template-columns:1fr;min-height:140px;padding:51px 12px 17px;}
+      .header-copy {grid-column:1;}
+      .header-art {grid-column:1;justify-self:center;margin-top:8px;}
+      .header-top {left:13px;top:12px;}
+      h1 {font-size:24px;}
+    }
+
+    /* v11: 입력 선택 우선, 분석 버튼은 입력 준비 후 활성화 */
+    header {display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:154px;padding:38px 18px 15px;}
+    .header-copy {display:contents;}
+    .header-top {position:absolute;top:13px;left:18px;}
+    header h1 {order:1;text-align:center;margin:0;}
+    header p {order:2;text-align:center;margin:0;}
+    .header-art {order:3;display:flex;justify-content:center;justify-self:center;margin-top:7px;}
+    .header-art svg {width:32px;height:32px;}
+    .input-actions {gap:10px;}
+    .input-actions button,.input-actions .upload {background:#e9f5e8!important;color:#285e40!important;border:2px solid #c9e5ce!important;min-height:78px;font-size:17px!important;font-weight:850;line-height:1.45;padding:12px 8px;}
+    .input-actions button.active,.input-actions .upload.active {background:#d4ebd6!important;border-color:#6eaf82!important;box-shadow:0 0 0 2px #c4e4cd inset!important;}
+    .input-actions button:hover,.input-actions .upload:hover {background:#d8eedb!important;}
+    .analyze-drawing {background:#355fd4!important;color:#fff!important;box-shadow:0 5px 12px rgba(53,95,212,.16);transition:background .2s,opacity .2s,box-shadow .2s;}
+    .analyze-drawing:disabled {background:#e8ebf0!important;color:#929cad!important;box-shadow:none!important;opacity:1;cursor:not-allowed;transform:none;filter:none;}
+    .analyze-drawing:not(:disabled):hover {background:#294fb8!important;}
+    @media(max-width:850px){header{min-height:154px;padding:47px 12px 15px;}.header-art{margin-top:6px;}.input-actions button,.input-actions .upload{font-size:clamp(12px,3vw,17px)!important;padding:10px 4px;min-height:72px;}}
   </style>
   <!-- 6주차 수업 조건: Teachable Machine에서 제공하는 라이브러리와 버전을 사용합니다. -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@1.3.1/dist/tf.min.js"></script>
@@ -56,54 +162,101 @@
 <body>
   <main class="wrap">
     <header>
-      <span class="eyebrow">초등학교 3학년 · 수학 × 인공지능</span>
-      <h1>🔷 AI 도형 탐험대</h1>
-      <p>내가 그린 도형을 AI는 알아볼 수 있을까?<br>사진을 보여주고, AI의 생각을 확인해 보세요!</p>
+      <div class="header-copy"><div class="header-top"><span class="eyebrow">3학년 수학 · 2단원 평면도형</span></div>
+      <h1>AI로 평면도형 구별하기</h1>
+      <p>직각삼각형 · 직사각형 · 정사각형</p></div>
+      <div class="header-art" aria-hidden="true">
+        <svg viewBox="0 0 48 48"><path d="M8 6 V40 H42 Z" fill="#ffe4bd" stroke="#e5aa63" stroke-width="2.3" stroke-linejoin="round"/><path d="M8 30 H18 V40" fill="none" stroke="#e5aa63" stroke-width="1.7"/></svg>
+        <svg viewBox="0 0 48 48"><rect x="4" y="11" width="40" height="27" rx="2" fill="#d9f1e5" stroke="#77b99a" stroke-width="2.3"/></svg>
+        <svg viewBox="0 0 48 48"><rect x="8" y="7" width="33" height="33" rx="2" fill="#e6e0ff" stroke="#9c91d7" stroke-width="2.3"/></svg>
+      </div>
     </header>
     <div class="layout">
       <section class="panel" aria-labelledby="upload-title">
-        <p class="section-label">STEP 01 · 도형 보여주기</p>
+        <p class="section-label">STEP 01 <span class="step-desc">도형 보여주기</span></p>
         <h2 id="upload-title">도형 사진을 준비해요</h2>
-        <div class="actions">
-          <label class="upload primary" for="imageFile">📁 사진 올리기<input id="imageFile" type="file" accept="image/*" /></label>
-          <button class="secondary" id="startCamera" type="button">📷 카메라 켜기</button>
+        <div class="input-actions" aria-label="도형 입력 방법">
+          <button class="primary" id="startCamera" type="button">📷 1. 카메라로 찍기</button>
+          <label class="upload secondary" for="imageFile">🖼️ 2. 사진 올리기<input id="imageFile" type="file" accept="image/*" /></label>
+          <button class="secondary" id="openDrawing" type="button">✏️ 3. 직접 그리기</button>
+        </div>
+        <div class="camera-actions" id="cameraActions" hidden>
+          <button class="primary" id="captureCamera" type="button" disabled>📸 사진 찍기</button>
           <button class="ghost" id="stopCamera" type="button" disabled>카메라 끄기</button>
         </div>
-        <div class="stage">
-          <div class="placeholder" id="placeholder"><span class="emoji">✏️ 📐</span><strong>도형을 보여주세요!</strong>사진을 올리거나 카메라를 켜 보세요.</div>
+        <div class="draw-controls" id="drawingControls" hidden>
+          <div class="control-row"><span class="control-label">배경</span><button type="button" data-background="white" class="selected" aria-pressed="true">⬜ 흰 배경</button><button type="button" data-background="grid" aria-pressed="false">▦ 모눈종이</button></div>
+          <div class="control-row"><span class="control-label">그리기</span><button type="button" data-tool="free" class="selected" aria-pressed="true">✏️ 손그림</button><button type="button" data-tool="line" aria-pressed="false">📏 직선</button></div>
+          <div class="draw-actions"><button type="button" class="ghost" id="undoDrawing">↶ 되돌리기</button><button type="button" class="ghost" id="clearDrawing">지우기</button></div>
+        </div>
+        <div class="draw-stage" id="drawingStage" hidden><canvas id="drawingCanvas" width="500" height="500" aria-label="손가락이나 마우스로 도형을 그리는 곳"></canvas></div>
+        <div class="crop-stage" id="cropStage" hidden><canvas id="cropCanvas" width="500" height="500" aria-label="사진을 움직여 정사각형 안에 맞추는 곳"></canvas></div>
+        <div class="crop-controls" id="cropControls" hidden>
+          <div class="zoom-row"><label for="cropZoom">🔍 사진 크기</label><input id="cropZoom" type="range" min="1" max="3" step="0.01" value="1" /></div>
+          <p class="crop-note">사진을 손가락이나 마우스로 움직여 도형 전체를 맞춰 보세요.</p>
+        </div>
+        <div class="stage" id="photoStage">
+          <div class="placeholder" id="placeholder"><span class="emoji">✏️ 📐</span><strong>도형을 보여주세요!</strong>사진을 찍거나, 올리거나, 직접 그려 보세요.</div>
           <img id="preview" alt="내가 선택한 도형 사진" />
           <video id="camera" autoplay muted playsinline aria-label="실시간 카메라 화면"></video>
         </div>
-        <p class="hint">사진은 브라우저 안에서만 분석해요. 카메라는 HTTPS 웹사이트에서 사용할 수 있어요. 처음 모델을 불러올 때는 인터넷 연결이 필요해요.</p>
+        <button type="button" class="analyze-drawing" id="analyzeDrawing" disabled aria-disabled="true">✨ AI에게 물어보기</button>
+        <p class="hint">도형 전체가 보이게 맞춰 주세요. 사진과 그림은 저장되지 않아요.</p>
       </section>
       <section class="panel" aria-labelledby="result-title">
-        <p class="section-label">STEP 02 · AI의 생각 확인하기</p>
+        <p class="section-label">STEP 02 <span class="step-desc">AI의 생각 확인하기</span></p>
         <h2 id="result-title">AI는 어떤 도형이라고 할까요?</h2>
+        <aside class="notice" role="note">💡 <strong>AI도 틀릴 수 있어요.</strong> 도형의 특징을 직접 확인해요.</aside>
         <div id="status" class="status" role="status" aria-live="polite">AI 모델을 불러오는 중이에요…</div>
         <div class="answer" aria-live="polite">
           <div class="tiny">AI가 예측한 도형</div>
           <div class="name" id="answer">기다리는 중…</div>
           <div class="confidence" id="confidence">도형 사진을 준비해 주세요.</div>
         </div>
-        <div id="bars" aria-label="도형별 AI 예측 확률"></div>
+        <div id="bars" aria-label="도형별 AI 예측 정도를 보여주는 막대그래프"></div>
+        <div id="retryTips" class="retry-tips" hidden>
+          <strong>📷 이렇게 다시 찍어 볼까요?</strong>
+          <ol><li>도형의 꼭짓점과 변이 모두 보이게 찍어요.</li><li>그림자가 적고 밝은 곳에서 찍어요.</li><li>도형을 한 개만 크게 찍고, 모눈종이 무늬나 주변 물건은 적게 나오게 해요.</li></ol>
+          <p>그래도 어렵다면 선생님과 함께 살펴봐요.</p>
+        </div>
         <div class="question">
-          <h3>🔎 AI의 말이 정말 맞을까요?</h3>
+          <h3>STEP 03 · 직접 확인해 볼까요? 🔎</h3>
           <p id="questionText">AI가 예측한 뒤, 도형의 각과 변을 직접 살펴봐요.</p>
+        </div>
+        <div id="selfCheck" class="self-check" hidden>
+          <h3>AI의 생각이 맞는지 체크해 봐요!</h3>
+          <p id="checkIntro">사진 속 도형을 살펴보고, 맞는 특징에 표시해 보세요.</p>
+          <div id="checkItems"></div>
+          <div id="checkFeedback" class="check-feedback" role="status" aria-live="polite">도형의 특징을 하나씩 확인해요.</div>
+          <p id="checkNote" class="check-note"></p>
+          <button class="ghost" id="resetChecks" type="button">체크 다시 하기</button>
         </div>
       </section>
     </div>
-    <aside class="notice">💡 <strong>탐구 약속</strong> — AI가 100% 확신해도 틀릴 수 있어요. 직각삼각형은 직각이 있는지, 직사각형은 네 각이 직각인지, 정사각형은 네 각이 직각이고 네 변의 길이가 같은지 직접 확인해 봐요. 이 활동에서 ‘직사각형’은 정사각형이 아닌 직사각형을 뜻해요.</aside>
-    <p class="bottom">이 웹사이트는 Teachable Machine으로 학습한 도형 분류 모델을 사용합니다. 사진은 외부 서버로 업로드하지 않습니다.</p>
+    <p class="bottom">이 웹사이트는 Teachable Machine으로 학습한 도형 분류 모델을 사용합니다. 사진을 저장하거나 서버로 전송하는 기능은 없습니다.</p>
   </main>
   <script>
     // 1. Teachable Machine에서 다운로드한 모델 3개 파일을 같은 폴더에서 읽는다.
     const MODEL_URL = './model.json';
     const METADATA_URL = './metadata.json';
+    const CONFIG = {
+      title: "AI로 평면도형 구별하기",
+      grade: "초등학교 3학년",
+      threshold: 0.80, // 임시 운영값: 목표 정확도 95%를 달성한 기준값은 아님
+      unsure: "🤔 잘 모르겠어요",
+      notice: "AI가 틀릴 수도 있어요. 도형의 특징을 직접 확인해 봐요."
+    };
+    const ICONS = {right_triangle:'📐',rectangle:'▭',square:'□'};
+    const CHECKS = {
+      right_triangle:['곧은 선분 3개로 둘러싸여 있나요?','세 각 중 직각인 각이 하나 있나요?'],
+      rectangle:['곧은 선분 4개로 둘러싸여 있나요?','네 각이 모두 직각인가요?','이웃한 두 변의 길이가 서로 다른가요?'],
+      square:['곧은 선분 4개로 둘러싸여 있나요?','네 각이 모두 직각인가요?','네 변의 길이가 모두 같은가요?']
+    };
     const KOREAN = {right_triangle:'직각삼각형', rectangle:'직사각형', square:'정사각형'};
     const QUESTIONS = {
-      right_triangle:'삼각형의 세 각 중 직각(90°)이 하나 있나요? 직접 살펴보세요.',
-      rectangle:'네 각이 모두 직각인가요? 그리고 가로와 세로의 길이는 다른가요?',
-      square:'네 각이 모두 직각인가요? 네 변의 길이가 모두 같은가요?'
+      right_triangle:'세 변과 직각인 곳을 직접 찾아볼까요?',
+      rectangle:'네 각이 직각인지, 이웃한 두 변의 길이가 다른지 살펴봐요.',
+      square:'네 각이 직각인지, 네 변의 길이가 같은지 살펴봐요.'
     };
     const imageInput = document.getElementById('imageFile');
     const preview = document.getElementById('preview');
@@ -114,9 +267,147 @@
     const confidence = document.getElementById('confidence');
     const questionText = document.getElementById('questionText');
     const bars = document.getElementById('bars');
+    const retryTips = document.getElementById('retryTips');
+    const selfCheck = document.getElementById('selfCheck');
+    const checkIntro = document.getElementById('checkIntro');
+    const checkItems = document.getElementById('checkItems');
+    const checkFeedback = document.getElementById('checkFeedback');
+    const checkNote = document.getElementById('checkNote');
+    const resetChecks = document.getElementById('resetChecks');
+    let lastCheckClass = null;
+    function updateCheckFeedback() {
+      const boxes = [...checkItems.querySelectorAll('input[type=checkbox]')];
+      const count = boxes.filter(x=>x.checked).length;
+      if (count === boxes.length && count > 0) checkFeedback.textContent = '✨ 도형의 특징을 모두 확인했어요! AI의 생각과 내가 확인한 특징이 일치해요.';
+      else if (count === 0) checkFeedback.textContent = '사진을 보면서 특징을 하나씩 확인해 봐요. 맞지 않으면 체크하지 않아도 돼요.';
+      else checkFeedback.textContent = `지금 ${count}개를 확인했어요. 나머지 특징도 맞는지 살펴봐요. 맞지 않는 특징이 있다면 AI의 답이 틀렸을 수도 있어요.`;
+    }
+    function showChecklist(className) {
+      if (lastCheckClass !== className) {
+        lastCheckClass = className;
+        checkItems.replaceChildren();
+        for (const question of CHECKS[className] || []) {
+          const label = document.createElement('label'); label.className='check-item';
+          const box = document.createElement('input'); box.type='checkbox'; box.addEventListener('change', updateCheckFeedback);
+          const span = document.createElement('span'); span.textContent=question;
+          label.append(box,span); checkItems.append(label);
+        }
+        checkIntro.textContent = `${KOREAN[className]}의 특징이 정말 있는지 사진을 보며 확인해요.`;
+        checkNote.textContent = className === 'rectangle' || className === 'square'
+          ? '정사각형도 직사각형의 한 종류예요. 이 AI 활동에서는 두 도형을 나누어 분류해요.'
+          : '삼각형은 곧은 선분 3개로 둘러싸인 도형이에요.';
+        updateCheckFeedback();
+      }
+      selfCheck.hidden = false;
+    }
+    resetChecks.addEventListener('click', () => {
+      checkItems.querySelectorAll('input[type=checkbox]').forEach(x=>x.checked=false);
+      updateCheckFeedback();
+    });
     const startCamera = document.getElementById('startCamera');
     const stopCamera = document.getElementById('stopCamera');
     let model = null, stream = null, imageURL = null, requestId = 0, cameraSession = 0;
+    const captureCamera = document.getElementById("captureCamera");
+    const cameraCanvas = document.createElement("canvas");
+    const cameraActions = document.getElementById('cameraActions');
+    const drawingControls = document.getElementById('drawingControls');
+    const drawingStage = document.getElementById('drawingStage');
+    const cropStage = document.getElementById('cropStage');
+    const cropControls = document.getElementById('cropControls');
+    const cropCanvas = document.getElementById('cropCanvas');
+    const cropCtx = cropCanvas.getContext('2d');
+    const cropZoom = document.getElementById('cropZoom');
+    const cropState = {source:null,base:1,zoom:1,dx:0,dy:0,drag:null};
+    let inputMode='none';
+    function renderCrop(){
+      const c=cropCanvas,ctx=cropCtx,im=cropState.source;
+      ctx.fillStyle='#fff';ctx.fillRect(0,0,c.width,c.height);
+      if(!im)return;
+      const scale=cropState.base*cropState.zoom;
+      const w=im.width*scale,h=im.height*scale;
+      ctx.drawImage(im,(c.width-w)/2+cropState.dx,(c.height-h)/2+cropState.dy,w,h);
+    }
+    function setCropSource(source){
+      cropState.source=source;cropState.base=Math.max(cropCanvas.width/source.width,cropCanvas.height/source.height);
+      cropState.zoom=1;cropState.dx=0;cropState.dy=0;cropZoom.value='1';
+      cropStage.hidden=false;cropControls.hidden=false;photoStage.hidden=true;renderCrop();updateAnalyzeAvailability();
+    }
+    cropZoom.addEventListener('input',()=>{cropState.zoom=Number(cropZoom.value);renderCrop();});
+    cropCanvas.addEventListener('pointerdown',e=>{e.preventDefault();cropCanvas.setPointerCapture(e.pointerId);cropState.drag={x:e.clientX,y:e.clientY,dx:cropState.dx,dy:cropState.dy};});
+    cropCanvas.addEventListener('pointermove',e=>{if(!cropState.drag)return;e.preventDefault();const r=cropCanvas.getBoundingClientRect();cropState.dx=cropState.drag.dx+(e.clientX-cropState.drag.x)*cropCanvas.width/r.width;cropState.dy=cropState.drag.dy+(e.clientY-cropState.drag.y)*cropCanvas.height/r.height;renderCrop();});
+    ['pointerup','pointercancel','lostpointercapture'].forEach(t=>cropCanvas.addEventListener(t,()=>cropState.drag=null));
+    function hideCrop(){cropStage.hidden=true;cropControls.hidden=true;cropState.source=null;updateAnalyzeAvailability();}
+
+    const photoStage = document.getElementById('photoStage');
+    const analyzeDrawingButton = document.getElementById('analyzeDrawing');
+    function updateAnalyzeAvailability(){
+      const ready=(inputMode==='photo' && !!cropState.source) || (inputMode==='drawing' && drawingState.strokes.length>0);
+      analyzeDrawingButton.disabled=!ready;
+      analyzeDrawingButton.setAttribute('aria-disabled',String(!ready));
+    }
+    const drawingCanvas = document.getElementById('drawingCanvas');
+    const drawCtx = drawingCanvas.getContext('2d');
+    const openDrawing = document.getElementById('openDrawing');
+    const drawingState = {background:'white',tool:'free',strokes:[],active:null};
+    function renderDrawing() {
+      const w=drawingCanvas.width,h=drawingCanvas.height;
+      drawCtx.fillStyle='#fff';drawCtx.fillRect(0,0,w,h);
+      if(drawingState.background==='grid') {
+        drawCtx.strokeStyle='#d8dce3';drawCtx.lineWidth=1;
+        for(let n=0;n<=w;n+=20){drawCtx.beginPath();drawCtx.moveTo(n,0);drawCtx.lineTo(n,h);drawCtx.stroke();}
+        for(let n=0;n<=h;n+=20){drawCtx.beginPath();drawCtx.moveTo(0,n);drawCtx.lineTo(w,n);drawCtx.stroke();}
+      }
+      for(const stroke of [...drawingState.strokes,...(drawingState.active?[drawingState.active]:[])]){
+        if(!stroke.points.length)continue;
+        drawCtx.strokeStyle='#263b54';drawCtx.lineWidth=5;drawCtx.lineCap='round';drawCtx.lineJoin='round';
+        drawCtx.beginPath();drawCtx.moveTo(stroke.points[0].x,stroke.points[0].y);
+        if(stroke.tool==='line'){
+          const end=stroke.points[stroke.points.length-1];drawCtx.lineTo(end.x,end.y);
+        }else{
+          for(const pt of stroke.points.slice(1))drawCtx.lineTo(pt.x,pt.y);
+          if(stroke.points.length===1){const pt=stroke.points[0];drawCtx.lineTo(pt.x+.01,pt.y+.01);}
+        }
+        drawCtx.stroke();
+      }
+    }
+    function drawingPoint(event){const r=drawingCanvas.getBoundingClientRect();return {x:Math.max(0,Math.min(500,(event.clientX-r.left)*500/r.width)),y:Math.max(0,Math.min(500,(event.clientY-r.top)*500/r.height))};}
+    drawingCanvas.addEventListener('pointerdown',e=>{if(drawingStage.hidden)return;e.preventDefault();drawingCanvas.setPointerCapture(e.pointerId);drawingState.active={tool:drawingState.tool,points:[drawingPoint(e)]};renderDrawing();});
+    drawingCanvas.addEventListener('pointermove',e=>{if(!drawingState.active)return;e.preventDefault();const p=drawingPoint(e);if(drawingState.active.tool==='line')drawingState.active.points=[drawingState.active.points[0],p];else drawingState.active.points.push(p);renderDrawing();});
+    function finishStroke(e){if(!drawingState.active)return;e.preventDefault();drawingState.strokes.push(drawingState.active);drawingState.active=null;renderDrawing();updateAnalyzeAvailability();}
+    drawingCanvas.addEventListener('pointerup',finishStroke);
+    drawingCanvas.addEventListener('pointercancel',finishStroke);
+    drawingControls.querySelectorAll('[data-background]').forEach(btn=>btn.addEventListener('click',()=>{
+      drawingState.background=btn.dataset.background;
+      drawingControls.querySelectorAll('[data-background]').forEach(b=>{b.classList.toggle('selected',b===btn);b.setAttribute('aria-pressed',String(b===btn));});renderDrawing();
+    }));
+    drawingControls.querySelectorAll('[data-tool]').forEach(btn=>btn.addEventListener('click',()=>{
+      drawingState.tool=btn.dataset.tool;
+      drawingControls.querySelectorAll('[data-tool]').forEach(b=>{b.classList.toggle('selected',b===btn);b.setAttribute('aria-pressed',String(b===btn));});
+    }));
+    document.getElementById('undoDrawing').addEventListener('click',()=>{drawingState.strokes.pop();renderDrawing();updateAnalyzeAvailability();});
+    document.getElementById('clearDrawing').addEventListener('click',()=>{drawingState.strokes=[];drawingState.active=null;renderDrawing();updateAnalyzeAvailability();resetResult();setStatus('그림을 지웠어요. 다시 그려 보세요.');});
+    function hideDrawing(){drawingControls.hidden=true;drawingStage.hidden=true;openDrawing.classList.remove('active');}
+    openDrawing.addEventListener('click',()=>{
+      stopCameraStream();++requestId;cameraActions.hidden=true;hideCrop();inputMode='drawing';
+      drawingControls.hidden=false;drawingStage.hidden=false;photoStage.hidden=true;preview.style.display='none';video.style.display='none';placeholder.style.display='none';
+      openDrawing.classList.add('active');resetResult();renderDrawing();updateAnalyzeAvailability();setStatus('손그림이나 직선으로 도형을 그린 뒤 AI에게 물어보세요.');
+    });
+    analyzeDrawingButton.addEventListener('click',async()=>{
+      if(!model){setStatus('AI 모델을 불러오는 중이에요.',true);return;}
+      let target;
+      if(inputMode==='drawing'){
+        if(drawingState.active)finishStroke({preventDefault(){}});
+        if(!drawingState.strokes.length){setStatus('먼저 도형을 그려 주세요.',true);return;}
+        target=drawingCanvas;
+      } else if(inputMode==='photo'){
+        if(!cropState.source){setStatus('먼저 사진을 찍거나 올려 주세요.',true);return;}
+        renderCrop();target=cropCanvas;
+      } else {setStatus('먼저 사진을 찍거나 올리거나 직접 그려 주세요.',true);return;}
+      try{setStatus('AI가 도형을 살펴보는 중이에요…');await predict(target);setStatus('분석 완료! 도형의 특징을 직접 확인해 봐요.');
+        if(window.innerWidth<=850) document.getElementById('result-title').scrollIntoView({behavior:'smooth',block:'start'});
+      }catch(err){console.error(err);setStatus('분석에 실패했어요. 다시 시도해 주세요.',true);}
+    });
+    renderDrawing();updateAnalyzeAvailability();
 
     function setStatus(message, error=false) {
       status.textContent = message;
@@ -127,6 +418,7 @@
       confidence.textContent = '도형 사진을 준비해 주세요.';
       questionText.textContent = 'AI가 예측한 뒤, 도형의 각과 변을 직접 살펴봐요.';
       bars.replaceChildren();
+      retryTips.hidden=true; selfCheck.hidden=true; lastCheckClass=null;
     }
     // 2. 사진 또는 카메라 화면을 모델에 넣어 예측한다.
     async function predict(element) {
@@ -135,81 +427,76 @@
       const ranked = [...result].sort((a,b) => b.probability-a.probability);
       const top = ranked[0];
       if (!top) return;
-      const confident = top.probability >= 0.7;
-      answer.textContent = confident ? (KOREAN[top.className] || top.className) : '잘 모르겠어요 🤔';
+      const confident = top.probability >= CONFIG.threshold;
+      answer.textContent = confident ? `${ICONS[top.className] || '🔎'} ${KOREAN[top.className] || top.className} 같아요!` : CONFIG.unsure;
       confidence.textContent = confident
-        ? `가장 높은 예측 확률: ${(top.probability*100).toFixed(1)}%`
-        : `가장 높은 확률이 ${(top.probability*100).toFixed(1)}%로, 70%보다 낮아요.`;
+        ? 'AI의 생각이에요. 도형의 특징을 직접 확인해 봐요!'
+        : '괜찮아요. 사진을 다시 찍거나 선생님과 함께 살펴봐요.';
       questionText.textContent = confident
         ? (QUESTIONS[top.className] || 'AI의 예측이 맞는지 도형의 성질을 확인해 보세요.')
-        : '어떤 도형인지 각과 변을 직접 살펴보세요. 사진을 더 밝게 찍거나 다시 보여줘도 좋아요.';
+        : '도형의 변과 각을 직접 살펴봐요.';
+      retryTips.hidden = confident;
+      if (confident) showChecklist(top.className);
+      else { selfCheck.hidden=true; lastCheckClass=null; }
       bars.replaceChildren();
       for (const item of result) {
         const row = document.createElement('div'); row.className='bar-item';
         const head = document.createElement('div'); head.className='bar-head';
         const label = document.createElement('span'); label.textContent = KOREAN[item.className] || item.className;
-        const number = document.createElement('span'); number.textContent = (item.probability*100).toFixed(1)+'%';
-        head.append(label,number);
+        head.append(label);
         const track = document.createElement('div'); track.className='bar-track';
         const fill = document.createElement('div'); fill.className='bar-fill'+(item.className===top.className?' top':'');
         fill.style.width = Math.max(0,Math.min(100,item.probability*100))+'%';
+        track.setAttribute('role','img'); track.setAttribute('aria-label',`${KOREAN[item.className] || item.className}의 AI 예측 정도를 나타내는 막대`);
         track.append(fill); row.append(head,track); bars.append(row);
       }
     }
     // 3. 선택한 사진은 외부에 전송하지 않고 브라우저에서만 사용한다.
-    imageInput.addEventListener('change', async () => {
-      const file = imageInput.files && imageInput.files[0];
-      if (!file) return;
-      if (!file.type.startsWith('image/')) { setStatus('이미지 파일을 선택해 주세요.',true); return; }
-      stopCameraStream();
-      const thisRequest = ++requestId;
-      if (imageURL) URL.revokeObjectURL(imageURL);
-      imageURL = URL.createObjectURL(file);
-      preview.style.display='block'; video.style.display='none'; placeholder.style.display='none';
-      preview.onload = async () => {
-        if (thisRequest !== requestId) return;
-        if (!model) { setStatus('모델이 준비되면 사진을 분석할 수 있어요.'); return; }
-        try { setStatus('사진을 분석하는 중이에요…'); await predict(preview); setStatus('분석 완료! AI의 예측을 확인해 보세요.'); }
-        catch(err) { console.error(err); setStatus('사진 분석에 실패했어요. 다른 사진으로 다시 시도해 주세요.',true); }
-      };
-      preview.onerror = () => setStatus('사진을 읽을 수 없어요. 다른 이미지 파일을 선택해 주세요.',true);
-      preview.src=imageURL;
-      resetResult();
+    imageInput.addEventListener('change', () => {
+      const file=imageInput.files&&imageInput.files[0];
+      if(!file)return;
+      if(!file.type.startsWith('image/')){setStatus('이미지 파일을 선택해 주세요.',true);return;}
+      stopCameraStream();hideDrawing();hideCrop();cameraActions.hidden=true;inputMode='photo';updateAnalyzeAvailability();
+      const thisRequest=++requestId;
+      if(imageURL)URL.revokeObjectURL(imageURL);
+      imageURL=URL.createObjectURL(file);
+      const img=new Image();
+      img.onload=()=>{if(thisRequest!==requestId)return;setCropSource(img);resetResult();setStatus('사진을 움직여 도형을 맞춘 다음 AI에게 물어보세요.');};
+      img.onerror=()=>setStatus('사진을 읽을 수 없어요. 다른 파일을 선택해 주세요.',true);
+      img.src=imageURL;
+      imageInput.value='';
     });
     function stopCameraStream() {
       cameraSession++;
       if (stream) { stream.getTracks().forEach(track => track.stop()); stream=null; }
       video.pause(); video.srcObject=null;
-      stopCamera.disabled=true; startCamera.disabled=false;
+      stopCamera.disabled=true; startCamera.disabled=false; captureCamera.disabled=true;
     }
     // 4. 카메라를 켜면 브라우저가 권한을 요청한다. 카메라 영상도 외부로 전송하지 않는다!
-    startCamera.addEventListener('click', async () => {
-      if (!model) { setStatus('AI 모델을 먼저 불러와야 해요.',true); return; }
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        setStatus('카메라를 사용할 수 없어요. HTTPS로 배포한 주소에서 열거나 사진 업로드를 이용해 주세요.',true); return;
-      }
-      stopCameraStream(); ++requestId;
-      const session = cameraSession;
-      try {
+    startCamera.addEventListener('click',async()=>{
+      if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){setStatus('카메라를 사용할 수 없어요. HTTPS 주소에서 열거나 사진을 올려 주세요.',true);return;}
+      stopCameraStream();hideDrawing();hideCrop();inputMode='none';updateAnalyzeAvailability();cameraActions.hidden=false;++requestId;photoStage.hidden=false;
+      const session=cameraSession;
+      try{
         setStatus('카메라 연결 중이에요…');
-        const newStream = await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:'environment'}});
-        if (session !== cameraSession) { newStream.getTracks().forEach(t=>t.stop()); return; }
-        stream = newStream; video.srcObject=stream;
-        await video.play();
-        preview.style.display='none'; video.style.display='block'; placeholder.style.display='none';
-        startCamera.disabled=true; stopCamera.disabled=false;
-        setStatus('카메라로 도형을 비춰 보세요. AI가 계속 예측해요.');
-        async function loop() {
-          if (session !== cameraSession || !stream) return;
-          try { if (video.readyState >= 2) await predict(video); }
-          catch(err) { console.error(err); setStatus('카메라 분석 중 오류가 발생했어요.',true); stopCameraStream(); return; }
-          if (session === cameraSession && stream) requestAnimationFrame(loop);
-        }
-        loop();
-      } catch(err) { console.error(err); stopCameraStream(); setStatus('카메라를 열지 못했어요. 권한을 확인하거나 사진 업로드를 이용해 주세요.',true); }
+        const newStream=await navigator.mediaDevices.getUserMedia({audio:false,video:{facingMode:'environment'}});
+        if(session!==cameraSession){newStream.getTracks().forEach(t=>t.stop());return;}
+        stream=newStream;video.srcObject=stream;await video.play();
+        preview.style.display='none';video.style.display='block';placeholder.style.display='none';
+        startCamera.disabled=true;stopCamera.disabled=false;captureCamera.disabled=false;
+        resetResult();setStatus('도형을 화면에 담고 사진 찍기를 눌러 주세요.');
+      }catch(err){console.error(err);stopCameraStream();cameraActions.hidden=true;setStatus('카메라를 열지 못했어요. 권한을 확인하거나 사진을 올려 주세요.',true);}
+    });
+    captureCamera.addEventListener('click',()=>{
+      if(!stream||video.readyState<2)return;
+      cameraCanvas.width=video.videoWidth;cameraCanvas.height=video.videoHeight;
+      cameraCanvas.getContext('2d').drawImage(video,0,0);
+      stopCameraStream();cameraActions.hidden=true;++requestId;
+      inputMode='photo';setCropSource(cameraCanvas);resetResult();
+      setStatus('찍은 사진을 움직이거나 확대해서 도형을 맞춘 다음 AI에게 물어보세요.');
     });
     stopCamera.addEventListener('click', () => {
-      stopCameraStream(); video.style.display='none';
+      stopCameraStream(); cameraActions.hidden=true; video.style.display='none';
       if (preview.src) preview.style.display='block'; else placeholder.style.display='block';
       setStatus('카메라를 껐어요. 사진을 업로드해도 좋아요.');
     });
@@ -226,9 +513,9 @@
         if (!['right_triangle','rectangle','square'].every(label => labels.includes(label)))
           throw new Error('모델의 클래스명이 예상한 이름과 다릅니다.');
         answer.textContent='준비 완료! ✨';
-        confidence.textContent='사진을 올리거나 카메라를 켜 보세요.';
+        confidence.textContent='사진을 찍거나, 올리거나, 직접 그려 보세요.';
         setStatus('AI 모델 준비 완료! 도형을 보여주세요.');
-        if (preview.complete && preview.naturalWidth) await predict(preview);
+        // 사진과 그림은 학생이 'AI에게 물어보기'를 누를 때만 분석합니다.
       } catch(err) {
         console.error('모델 로딩 오류:',err);
         answer.textContent='모델 연결 실패';
