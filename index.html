@@ -540,10 +540,9 @@
       } else if(inputMode==='photo'){
         if(!cropState.source){setStatus('먼저 사진을 찍거나 올려 주세요.',true);return;}
         renderCrop();
-        // 사진을 조정하지 않았다면 교사용 평가와 같은 원본 이미지로 예측한다.
-        // 확대하거나 이동했다면 학생이 선택한 정사각형 화면을 예측한다.
-        const cropAdjusted = Math.abs(cropState.zoom - 1) > 0.000001 || Math.abs(cropState.dx) > 0.01 || Math.abs(cropState.dy) > 0.01;
-        target = cropAdjusted ? cropCanvas : cropState.source;
+        // 학생 화면에 표시된 정사각형 사진을 항상 분석한다.
+        // 원본과 크롭 화면을 번갈아 분석하면 화면과 예측 결과가 달라질 수 있다.
+        target = cropCanvas;
       } else {setStatus('먼저 사진을 찍거나 올리거나 직접 그려 주세요.',true);return;}
       try{setStatus('AI가 도형을 살펴보는 중이에요…');await predict(target);setStatus('');
         if(window.innerWidth<=850) document.getElementById('resultPanel').scrollIntoView({behavior:'smooth',block:'start'});
@@ -577,7 +576,9 @@
       const top = ranked[0];
       if (!top) return;
       const confident = top.probability >= CONFIG.threshold;
-      console.info('[도형 예측 확인]', {예측:top.className, 최고확률:(top.probability*100).toFixed(2)+'%', 기준값:CONFIG.threshold, 판정:confident?'도형 표시':'잘 모르겠어요', 입력:element===cropCanvas?'조정된 정사각형 사진':'원본 사진 또는 그림'});
+      // 콘솔에서 마지막 실제 분석 결과를 확인할 수 있도록 기록한다.
+      window.lastShapePrediction = { probabilities: result.map(x=>({className:x.className, probability:x.probability})), topClass:top.className, topProbability:top.probability, threshold:CONFIG.threshold, verdict:confident?'도형 표시':'잘 모르겠어요' };
+      console.info('[도형 예측 확인]', {예측:top.className, 최고확률:(top.probability*100).toFixed(2)+'%', 기준값:CONFIG.threshold, 판정:confident?'도형 표시':'잘 모르겠어요', 입력:element===cropCanvas?'학생 화면의 정사각형 사진':element===drawingCanvas?'직접 그린 그림':'기타 입력'});
       answer.textContent = confident ? `${KOREAN[top.className] || top.className} 같아요!` : CONFIG.unsure;
       confidence.textContent = '';
       questionText.textContent = '';
